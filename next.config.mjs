@@ -1,12 +1,9 @@
-import bundleAnalyzer from '@next/bundle-analyzer';
-
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
-
-export default withBundleAnalyzer({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
   },
-});
+};
+
+export default nextConfig;

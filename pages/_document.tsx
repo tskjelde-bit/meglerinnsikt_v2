@@ -6,20 +6,23 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <ColorSchemeScript />
-        <meta name="title" content="Wanderlust" />
+        <meta name="title" content="Meglerinnsikt" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
         <meta name="image" content="/og-image.png" />
         <meta name="description" content="Find your next adventure" />
 
-        <meta name="og:title" content="Wanderlust" />
+        <meta name="og:title" content="Meglerinnsikt" />
         <meta name="og:description" content="Find your next adventure" />
         <meta name="og:image" content="/og-image.png" />
         <meta property="og:image:secure_url" content="/og-image.png" />
         <meta name="og:url" content="https://wanderlust.hultman.dev" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Wanderlust" />
+        <meta property="og:site_name" content="Meglerinnsikt" />
         <meta property="og_locale" content="en_US" />
 
-        <meta name="twitter:title" content="Wanderlust" />
+        <meta name="twitter:title" content="Meglerinnsikt" />
         <meta name="twitter:description" content="Find your next adventure" />
         <meta name="twitter:image" content="/og-image.png" />
         <meta name="twitter:url" content="https://wanderlust.hultman.dev" />

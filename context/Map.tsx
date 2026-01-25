@@ -1,10 +1,12 @@
-import React, { createContext, useContext, ReactNode, useCallback } from 'react';
-import { useLocalStorage } from '@mantine/hooks';
+import React, { createContext, useContext, ReactNode, useCallback, useState, useEffect } from 'react';
+import { useLocalStorage, useDebouncedValue } from '@mantine/hooks';
 
 export type MapCenter = {
   latitude: number;
   longitude: number;
   zoom: number;
+  bearing?: number;
+  pitch?: number;
 };
 
 export type MapMarker = {
@@ -15,31 +17,60 @@ export type MapMarker = {
   label: string;
 };
 
-type MapContextType = {
+export type MapContextType = {
   center: MapCenter;
   markers: MapMarker[];
   setCenter: (center: MapCenter) => void;
   addMarkers: (markers: MapMarker[]) => void;
+  selectedDistrict: string | null;
+  setSelectedDistrict: (district: string | null) => void;
+  droppedDistricts: string[];
+  setDroppedDistricts: (districts: string[]) => void;
 };
 
 const DEFAULT_VIEWPORT = {
-  latitude: 49.316666,
-  longitude: -123.066666,
-  zoom: 10,
+  latitude: 59.93,
+  longitude: 10.75,
+  zoom: 9.8,
+  bearing: -15, // Start skewed/rotated
+  pitch: 0,
 };
 
 const MapContext = createContext<MapContextType>({
   center: DEFAULT_VIEWPORT,
   markers: [],
-  setCenter: () => {},
-  addMarkers: () => {},
+  setCenter: () => { },
+  addMarkers: () => { },
+  selectedDistrict: null,
+  setSelectedDistrict: () => { },
+  droppedDistricts: [],
+  setDroppedDistricts: () => { },
 });
 
 export const MapProvider = ({ children }: { children: ReactNode }) => {
-  const [center, setCenter] = useLocalStorage<MapCenter>({
-    key: 'mapCenter',
-    defaultValue: DEFAULT_VIEWPORT,
-  });
+  // Use local state for high-frequency updates (animation)
+  const [center, setCenter] = useState<MapCenter>(DEFAULT_VIEWPORT);
+
+  // Initialize from LocalStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('mapCenter_v9');
+      if (stored) {
+        setCenter(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.warn('Failed to parse map center from local storage', e);
+    }
+  }, []);
+
+  // Persist to LocalStorage using debounce to prevent blocking the main thread during animations
+  const [debouncedCenter] = useDebouncedValue(center, 500);
+
+  useEffect(() => {
+    localStorage.setItem('mapCenter_v9', JSON.stringify(debouncedCenter));
+  }, [debouncedCenter]);
+
+  // Markers can still use direct useLocalStorage as they update infrequently
   const [markers, setMarkers] = useLocalStorage<MapMarker[]>({
     key: 'mapMarkers',
     defaultValue: [],
@@ -49,7 +80,7 @@ export const MapProvider = ({ children }: { children: ReactNode }) => {
     (newCenter: MapCenter) => {
       setCenter(newCenter);
     },
-    [setCenter]
+    []
   );
 
   const addMarkers = useCallback(
@@ -59,8 +90,20 @@ export const MapProvider = ({ children }: { children: ReactNode }) => {
     [setMarkers]
   );
 
+  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
+  const [droppedDistricts, setDroppedDistricts] = useState<string[]>([]);
+
   return (
-    <MapContext.Provider value={{ center, markers, setCenter: setCenterCallback, addMarkers }}>
+    <MapContext.Provider value={{
+      center,
+      markers,
+      setCenter: setCenterCallback,
+      addMarkers,
+      selectedDistrict,
+      setSelectedDistrict,
+      droppedDistricts,
+      setDroppedDistricts
+    }}>
       {children}
     </MapContext.Provider>
   );
