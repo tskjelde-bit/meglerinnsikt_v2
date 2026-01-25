@@ -1,8 +1,8 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useRef, useEffect, useState } from 'react';
 import Mapbox, { Marker, NavigationControl, Source, Layer, MapRef } from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
-import { Box, Card, Text, Title, Stack, Group } from '@mantine/core';
+import type mapboxgl from 'mapbox-gl';
+import { Box, Card, Group, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import classes from './Map.module.css';
 import { useMap } from '@/context/Map';
@@ -28,28 +28,6 @@ const districtColors: Record<string, string> = {
   'Østensjø': '#FFE066'
 };
 
-const eastSideDistricts = [
-  'Alna',
-  'Bjerke',
-  'Gamle Oslo',
-  'Grorud',
-  'Grünerløkka',
-  'Nordstrand',
-  'Sagene',
-  'Stovner',
-  'Søndre Nordstrand',
-  'Østensjø'
-];
-
-const westSideDistricts = [
-  'Frogner',
-  'Ullern',
-  'Vestre Aker',
-  'Nordre Aker',
-  'St. Hanshaugen',
-  'Sentrum'
-];
-
 function Map() {
   const sm = useMediaQuery('(max-width: 48em)');
   const { center, setCenter, selectedDistrict, setSelectedDistrict } = useMap();
@@ -57,12 +35,11 @@ function Map() {
 
   const [hoveredDistrict, setHoveredDistrict] = React.useState<string | null>(null);
 
-  // Swarm Animation State (Kept for compatibility, though currently unused)
+  // Swarm Animation State
   const [swarmOffsets, setSwarmOffsets] = useState<Record<string, { x: number, y: number, duration: string }>>({});
-  const [iconSwarmOffsets, setIconSwarmOffsets] = useState<Record<string, { x: number, y: number, duration: string }>>({});
   const [animationStarted, setAnimationStarted] = useState(false);
 
-  // Fetch label points (Kept for future use if needed)
+  // Fetch label points
   const [labelFeatures, setLabelFeatures] = React.useState<any[]>([]);
 
   useEffect(() => {
@@ -90,7 +67,6 @@ function Map() {
 
         const offsets: Record<string, { x: number, y: number, duration: string }> = {};
 
-        // Calculate offsets for HTML markers to fly in from top right
         labelFeatures.forEach(feature => {
           const name = feature.properties?.BYDELSNAVN;
           const coords = feature.geometry.coordinates;
@@ -107,7 +83,6 @@ function Map() {
         setSwarmOffsets(offsets);
         setAnimationStarted(true);
 
-        // Simultaneous Camera Move
         map.flyTo({
           center: [10.79, 59.93],
           zoom: 11.0,
@@ -139,6 +114,9 @@ function Map() {
     }
   }, [setSelectedDistrict]);
 
+  // Handle CSS height safe for SSR hydration
+  const mapHeight = sm !== undefined ? (sm ? cssHalfMainSize : cssMainSize) : cssMainSize;
+
   return (
     <Box className={classes.box}>
       <Mapbox
@@ -157,148 +135,136 @@ function Map() {
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         mapStyle={snapMapStyle as any}
         onError={(e) => console.error('Mapbox Error:', e)}
-        style={{ width: '100%', height: sm ? cssHalfMainSize : cssMainSize }}
+        style={{ width: '100%', height: mapHeight }}
       >
-        <Box pos="absolute" top={10} right={50} style={{ zIndex: 10, maxWidth: 320 }}>
+        <NavigationControl />
+
+        {/* Floating Instruction Card */}
+        <Box pos="absolute" top={20} right={50} style={{ zIndex: 10 }}>
           <Card
-            radius="md"
-            p="lg"
             shadow="sm"
+            padding="sm"
+            radius="md"
             withBorder
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.5)',
-              backdropFilter: 'blur(8px)',
-              color: '#0c2135'
+              backgroundColor: 'white',
+              maxWidth: 280
             }}
           >
-            <Stack gap={4}>
-              <Title order={3} style={{ color: '#0c2135', lineHeight: 1.2 }}>
-                Utforsk boligprisene i Oslo
-              </Title>
-              <Group gap="xs" align="center" mt={4}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#0c2135" stroke="#0c2135" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className={classes.cursorIcon}>
-                  <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
-                </svg>
-                <Text size="sm" c="gray.7">
+            <Group align="flex-start" wrap="nowrap" gap="xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor">
+                <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <Stack gap={2}>
+                <Text size="sm" fw={700} c="gray.9">
+                  Utforsk boligprisene i Oslo
+                </Text>
+                <Text size="xs" c="dimmed">
                   Klikk på en bydel for å se nøkkeltall.
                 </Text>
-              </Group>
-            </Stack>
+              </Stack>
+            </Group>
           </Card>
         </Box>
-        <NavigationControl />
-        {
-          isLoaded && (
-            <>
-              <Source id="oslo-bydeler" type="geojson" data="/oslo_bydeler.geojson?v=5">
-                {/* 1) Fill Layer */}
-                <Layer
-                  id="bydel-polygons"
-                  type="fill"
-                  paint={{
-                    'fill-color': [
-                      'case',
-                      ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], 'rgba(90,174,255,0.32)',
-                      ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], 'rgba(90,174,255,0.22)',
-                      'rgba(0,0,0,0)' // Default transparent
-                    ],
-                    'fill-color-transition': { duration: 200 }
-                  }}
-                />
 
-                {/* 2) Border Layer */}
-                <Layer
-                  id="bydel-outlines"
-                  type="line"
-                  paint={{
-                    'line-color': [
-                      'case',
-                      ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], '#2F8CFF',
-                      ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], '#5AAEFF',
-                      'rgba(0,0,0,0)'
-                    ],
-                    'line-width': [
-                      'case',
-                      ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], 2,
-                      ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], 1.5,
-                      0
-                    ],
-                    'line-color-transition': { duration: 200 },
-                    'line-width-transition': { duration: 200 }
-                  }}
-                />
-              </Source>
+        {isLoaded && (
+          <>
+            <Source id="oslo-bydeler" type="geojson" data="/oslo_bydeler.geojson?v=5">
+              <Layer
+                id="bydel-polygons"
+                type="fill"
+                paint={{
+                  'fill-color': [
+                    'case',
+                    ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], 'rgba(90,174,255,0.32)',
+                    ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], 'rgba(90,174,255,0.22)',
+                    'rgba(0,0,0,0)'
+                  ],
+                  'fill-color-transition': { duration: 200 }
+                }}
+              />
+              <Layer
+                id="bydel-outlines"
+                type="line"
+                paint={{
+                  'line-color': [
+                    'case',
+                    ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], '#2F8CFF',
+                    ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], '#5AAEFF',
+                    'rgba(0,0,0,0)'
+                  ],
+                  'line-width': [
+                    'case',
+                    ['==', ['get', 'BYDELSNAVN'], selectedDistrict || ''], 2,
+                    ['==', ['get', 'BYDELSNAVN'], hoveredDistrict || ''], 1.5,
+                    0
+                  ],
+                  'line-color-transition': { duration: 200 },
+                  'line-width-transition': { duration: 200 }
+                }}
+              />
+            </Source>
 
-              {/* Swarm Animation Markers (Overlay on top of static GL layers) */}
-              {labelFeatures.map((feature, index) => {
-                const districtName = feature.properties?.BYDELSNAVN;
-                const isHovered = districtName === hoveredDistrict;
-                const isSelected = districtName === selectedDistrict;
-                const isActive = isHovered || isSelected;
-                const isDimmed = !!hoveredDistrict && !isHovered;
+            {labelFeatures.map((feature, index) => {
+              const districtName = feature.properties?.BYDELSNAVN;
+              const isHovered = districtName === hoveredDistrict;
+              const isSelected = districtName === selectedDistrict;
+              const isActive = isHovered || isSelected;
+              const isDimmed = !!hoveredDistrict && !isHovered;
 
-                const coords = feature.geometry.coordinates;
-                const offset = swarmOffsets[districtName];
-                // Fallback color if not found
-                const pinColor = districtColors[districtName] || '#3B82F6';
+              const coords = feature.geometry.coordinates;
+              const offset = swarmOffsets[districtName];
+              const pinColor = '#94a3b8';
 
-                // Only render if animation has started and we have offsets for this district
-                if (!animationStarted || !offset) return null;
+              if (!animationStarted || !offset) return null;
 
-                return (
-                  <Marker
-                    key={`swarm-label-${index}`}
-                    latitude={coords[1]}
-                    longitude={coords[0]}
-                    // Ensure marker is clickable if needed, but interaction is mainly via Polygon Fill
-                    style={{ zIndex: isActive ? 100 : (isDimmed ? 5 : 10) }}
-                  >
-                    <div style={{ position: 'relative' }}>
-                      {/* X-Axis Motion */}
+              return (
+                <Marker
+                  key={`swarm-label-${index}`}
+                  latitude={coords[1]}
+                  longitude={coords[0]}
+                  style={{ zIndex: isActive ? 100 : (isDimmed ? 5 : 10) }}
+                >
+                  <div style={{ position: 'relative' }}>
+                    <div
+                      className={classes.flyInX}
+                      style={{
+                        '--dx': `${offset.x}px`,
+                        animationDuration: offset.duration
+                      } as React.CSSProperties}
+                    >
                       <div
-                        className={classes.flyInX}
+                        className={classes.flyInY}
                         style={{
-                          '--dx': `${offset.x}px`,
-                          animationDuration: offset.duration
+                          '--dy': `${offset.y}px`,
+                          animationDuration: offset.duration,
                         } as React.CSSProperties}
                       >
-                        {/* Y-Axis Motion Wrapper (Animation Isolation) */}
                         <div
-                          className={classes.flyInY}
+                          className={`${classes.pinContainer} ${isActive ? classes.active : ''} ${isDimmed ? classes.dimmed : ''}`}
+                          onMouseEnter={() => setHoveredDistrict(districtName)}
                           style={{
-                            '--dy': `${offset.y}px`,
-                            animationDuration: offset.duration,
+                            '--district-color': pinColor,
                           } as React.CSSProperties}
                         >
-                          {/* Pin Container (State & Interaction) */}
-                          <div
-                            className={`${classes.pinContainer} ${isActive ? classes.active : ''} ${isDimmed ? classes.dimmed : ''}`}
-                            onMouseEnter={() => setHoveredDistrict(districtName)}
-                            style={{
-                              '--district-color': pinColor,
-                            } as React.CSSProperties}
-                          >
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                              {/* SVG Pin */}
-                              <svg viewBox="0 0 24 24" className={classes.mapPin} style={{ fill: 'currentColor' }}>
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                <circle cx="12" cy="9" r="3.5" fill="white" />
-                              </svg>
-                              {/* Label Tag */}
-                              <div className={classes.label}>
-                                {districtName}
-                              </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <svg viewBox="0 0 24 24" className={classes.mapPin} style={{ fill: 'currentColor' }}>
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                              <circle cx="12" cy="9" r="3.5" fill="white" />
+                            </svg>
+                            <div className={classes.label}>
+                              {districtName}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </Marker>
-                );
-              })}
-            </>
-          )
-        }
+                  </div>
+                </Marker>
+              );
+            })}
+          </>
+        )}
       </Mapbox>
     </Box>
   );

@@ -1,273 +1,103 @@
 .box {
-  /* Restoring border radius for the map container */
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  /* Crucial for clipping the map corners */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
-  /* Equivalent to shadow-sm */
-  border: 1px solid #dee2e6;
-  /* Equivalent to gray-3 */
-
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: black;
-    margin-block-start: 8px;
-    margin-block-end: 6px;
-  }
+    position: relative;
+    width: 100%;
+    border-radius: 1.5rem;
+    /* Restore rounded corners */
+    overflow: hidden;
+    /* essential for map border radius */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-@keyframes colorPulse {
-  0% {
-    background-color: #0c2135;
-  }
-
-  50% {
-    background-color: #1b4366;
-  }
-
-  100% {
-    background-color: #0c2135;
-  }
+.pinContainer {
+    color: var(--district-color, #3B82F6);
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.animatedBox {
-  animation: colorPulse 6s infinite ease-in-out;
+.pinContainer:hover {
+    transform: scale(1.1) translateY(-2px);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    z-index: 50;
 }
 
-@keyframes shake {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-
-  25% {
-    transform: translate(-2px, 0) rotate(-1deg);
-  }
-
-  50% {
-    transform: translate(2px, 0) rotate(1deg);
-  }
-
-  75% {
-    transform: translate(-2px, 0) rotate(-1deg);
-  }
-
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
+.pinContainer.dimmed {
+    opacity: 0.3;
+    filter: grayscale(100%);
 }
 
+.pinContainer.active {
+    transform: scale(1.2) translateY(-4px);
+    z-index: 100;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+}
+
+.mapPin {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.label {
+    background: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #333;
+    margin-top: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+/* Swarm Animations */
 @keyframes flyInX {
-  0% {
-    transform: translateX(var(--dx));
-  }
+    from {
+        transform: translateX(var(--dx));
+    }
 
-  100% {
-    transform: translateX(0);
-  }
+    to {
+        transform: translateX(0);
+    }
 }
 
 @keyframes flyInY {
-  0% {
-    transform: translateY(var(--dy)) scale(0.2);
-    opacity: 0;
-  }
+    from {
+        transform: translateY(var(--dy));
+    }
 
-  10% {
-    opacity: 1;
-  }
-
-  30% {
-    transform: translateY(var(--dy)) scale(0.6);
-    /* Stay mostly up, grow a bit */
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-  }
+    to {
+        transform: translateY(0);
+    }
 }
 
-/* X-axis Wrapper: Handles horizontal movement */
 .flyInX {
-  animation: flyInX 2.5s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
-  /* ease-out-cubicish */
+    animation: flyInX 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Y-axis Wrapper: Handles vertical drop and scale */
 .flyInY {
-  animation: flyInY 2.5s cubic-bezier(0.550, 0.055, 0.675, 0.190) forwards;
-  /* ease-in-cubicish */
-  /* Using keyframes to delay the drop visually creates the curve */
+    animation: flyInY 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-.label {
-  /* Vesterbro Label Style */
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-
-  color: #1f2937;
-  /* Dark gray text */
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 999px;
-  /* Pill shape */
-  padding: 6px 16px;
-
-  /* Typography */
-  font-family: 'DIN Pro', 'Barlow', sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 14px;
-  letter-spacing: 0.05em;
-
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-top: 6px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-
-  /* Ensure it receives pointer events for the group hover to work if needed, though usually label is effectively part of the pin */
-  pointer-events: none;
-  z-index: 10;
+/* Custom Popup Overrides */
+/* Crucial to fix "Double Box" issue */
+.popupMap :global(.mapboxgl-popup-content) {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border: none !important;
 }
 
-/* --- PIN CONTAINER --- */
-.pinContainer {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  cursor: pointer;
-  z-index: 10;
-  /* Default fallback color */
-  --district-color: #999;
+.popupMap :global(.mapboxgl-popup-tip) {
+    display: none !important;
+    /* Hide the white triangle tip colliding with blue border */
 }
 
-/* Pin State: Inactive/Dimmed */
-.pinContainer.dimmed {
-  opacity: 0.6;
-  filter: grayscale(100%);
-  transform: scale(0.9);
+.popupMap :global(.mapboxgl-popup-close-button) {
+    display: none !important;
+    /* Hide default X, we'll use custom one inside */
 }
 
-/* Pin State: Active/Hover */
-.pinContainer:hover,
-.pinContainer.active {
-  z-index: 50;
-  transform: scale(1.1);
-  filter: grayscale(0%);
-}
-
-/* --- PIN ICON --- */
-.mapPin {
-  color: #3B82F6;
-  /* Default Blue */
-  font-size: 28px;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-  transition: color 0.3s ease, transform 0.3s ease;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-}
-
-.pinContainer:hover .mapPin,
-.pinContainer.active .mapPin {
-  color: #2F8CFF;
-  transform: translateY(-5px);
-  animation: none;
-}
-
-/* --- LABEL STYLING --- */
-.label {
-  background: rgba(255, 255, 255, 0.95);
-  /* Increased opacity for better readability */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: #334155;
-
-  /* Border starts transparent */
-  border: 2px solid transparent;
-
-  border-radius: 9999px;
-  padding: 6px 16px;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Active Label */
-.pinContainer:hover .label,
-.pinContainer.active .label {
-  border-color: #2F8CFF;
-  color: #2F8CFF;
-  background: #fff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  transform: none;
-}
-
-/* --- OVERLAY GLOW/BORDER REMOVED --- */
-/* User requested these effects to follow the district polygon boundary instead of being a circle around the pin.
-   These are now handled in the Mapbox Layer configuration. */
-
-.shake {
-  animation: shake 0.4s ease-in-out infinite;
-}
-
-.pinWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  /* Ensure we can absolute position children if needed, though they already have absolute styles inline */
-}
-
-.pin {
-  width: 40px;
-  height: 40px;
-  pointer-events: none;
-  z-index: 20;
-}
-
-@keyframes cursorClick {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  35% {
-    transform: translate(-4px, -4px) scale(1.1);
-  }
-
-  /* Hover up clearly */
-  50% {
-    transform: scale(0.8) rotate(-20deg);
-  }
-
-  /* Click/Press Harder */
-  65% {
-    transform: scale(0.8) rotate(-20deg);
-  }
-
-  /* Hold */
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-}
-
-.cursorIcon {
-  animation: cursorClick 2s infinite ease-in-out;
-  display: inline-block;
-  transform-origin: top left;
-  /* Pivot from the tip */
+/* Ensure Popup sits above everything (Labels z-index is complex in Mapbox GL, but this helps the HTML container) */
+.popupMap {
+    z-index: 2000 !important;
 }
