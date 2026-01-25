@@ -8,7 +8,24 @@ import { prefixPath } from '@/utils/path'; // Import helper
 
 const menuItems = [
     { label: 'Forsiden', link: '/' },
-    // ... existing menu definitions (unchanged)
+    {
+        label: 'Markedsrapporter',
+        links: [
+            { label: 'Markedsrapport januar 2026', link: '#' },
+            { label: 'Markedsrapport desember 2025', link: '#' },
+            { label: 'Markedsrapport november 2025', link: '#' },
+        ]
+    },
+    { label: 'Innsikt', link: '#' },
+    {
+        label: 'Blog',
+        links: [
+            { label: 'Topic 1', link: '#' },
+            { label: 'Topic 2', link: '#' },
+            { label: 'Topic 3', link: '#' },
+        ]
+    },
+    { label: 'Om', link: '#' },
     { label: 'Omtaler', link: '#' },
 ];
 
