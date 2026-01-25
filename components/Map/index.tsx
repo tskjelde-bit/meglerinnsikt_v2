@@ -8,6 +8,7 @@ import classes from './Map.module.css';
 import { useMap } from '@/context/Map';
 import { cssHalfMainSize, cssMainSize } from '@/theme';
 import { snapMapStyle } from './snapMapStyle';
+import { prefixPath } from '@/utils/path';
 
 const districtColors: Record<string, string> = {
   'Alna': '#FF4C4C',
@@ -43,7 +44,7 @@ function Map() {
   const [labelFeatures, setLabelFeatures] = React.useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/oslo_label_points.geojson?v=2')
+    fetch(prefixPath('/oslo_label_points.geojson?v=2'))
       .then(res => res.json())
       .then(data => {
         if (data.features) {
@@ -169,7 +170,7 @@ function Map() {
 
         {isLoaded && (
           <>
-            <Source id="oslo-bydeler" type="geojson" data="/oslo_bydeler.geojson?v=5">
+            <Source id="oslo-bydeler" type="geojson" data={prefixPath('/oslo_bydeler.geojson?v=5')}>
               <Layer
                 id="bydel-polygons"
                 type="fill"

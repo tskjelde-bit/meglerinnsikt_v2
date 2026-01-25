@@ -1,6 +1,7 @@
 import { Paper, Text, Overlay, Stack, Box, Button } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import classes from './FeaturedBlog.module.css';
+import { prefixPath } from '@/utils/path';
 
 export default function FeaturedBlog() {
     return (
@@ -19,7 +20,7 @@ export default function FeaturedBlog() {
             {/* Background Image for Zoom Effect */}
             <div
                 className={classes.bgImage}
-                style={{ backgroundImage: 'url(/featured_blog_bg_snow.jpg)' }}
+                style={{ backgroundImage: `url(${prefixPath('/featured_blog_bg_snow.jpg')})` }}
             />
 
             <Overlay
