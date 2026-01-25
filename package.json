@@ -14,7 +14,8 @@
     "jest:watch": "jest --watch",
     "prettier:check": "prettier --check \"**/*.{ts,tsx}\"",
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
-    "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest"
+    "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest",
+    "deploy:manual": "next build && rm -rf docs && mv out docs && touch docs/.nojekyll && git add docs && git commit -m \"Deploy to GitHub Pages\" && git push"
   },
   "dependencies": {
     "@mantine/core": "7.2.0",
