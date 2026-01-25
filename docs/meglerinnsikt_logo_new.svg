@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120" width="500" height="120" role="img" aria-label="Innsikt - Skaper verdi">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap');
+      .icon-light { fill: #4ba3e3; }
+      .icon-medium { fill: #3b71e8; }
+      .icon-dark { fill: #2c5270; }
+      .text-main { 
+        fill: #2c5270; 
+        font-family: 'Montserrat', sans-serif; 
+        font-weight: 700; 
+        font-size: 72px;
+      }
+      .text-sub { 
+        fill: #2c5270; 
+        font-family: 'Montserrat', sans-serif; 
+        font-weight: 500; 
+        font-size: 16px; 
+        letter-spacing: 4px;
+        text-transform: uppercase;
+      }
+    </style>
+  </defs>
+
+  <g transform="translate(10, 20) scale(0.9)">
+      <path class="icon-light" d="M45.1,59.8 l-34.7,0 l-10.4,18.1 l17.3,30 l34.7,0 l10.4,-18.1 Z"/>
+      <path class="icon-medium" d="M82.6,26 l-34.7,0 l-10.4,18.1 l17.3,30 l34.7,0 l10.4,-18.1 Z"/>
+      <path class="icon-dark" d="M120.1,26 l-34.7,0 l-10.4,18.1 l17.3,30 l34.7,0 l10.4,-18.1 Z"/>
+  </g>
+
+  <text x="155" y="80" class="text-main">Innsikt</text>
+  <text x="158" y="105" class="text-sub">Skaper verdi</text>
+</svg>
