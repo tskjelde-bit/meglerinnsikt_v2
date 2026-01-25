@@ -8,6 +8,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  trailingSlash: true,
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,
