@@ -2,7 +2,7 @@ import { Style } from 'mapbox-gl';
 
 export const kartMapStyle: Style = {
     version: 8,
-    name: 'Kart Minimal Style',
+    name: 'Meglerinnsikt Minimal',
 
     sources: {
         composite: {
@@ -12,12 +12,12 @@ export const kartMapStyle: Style = {
     },
     glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
     layers: [
-        // 1. BACKGROUND – very light, near-white
+        // 1. BACKGROUND – slate-50
         {
             id: 'background',
             type: 'background',
             paint: {
-                'background-color': '#f8f9fb',
+                'background-color': '#F8FAFC',
             },
         },
 
@@ -29,12 +29,12 @@ export const kartMapStyle: Style = {
             'source-layer': 'landuse',
             filter: ['in', 'class', 'residential', 'commercial', 'industrial', 'civic', 'hospital', 'school'],
             paint: {
-                'fill-color': '#f3f4f6',
-                'fill-opacity': 0.5,
+                'fill-color': '#F1F5F9',
+                'fill-opacity': 0.4,
             },
         },
 
-        // 3. PARKS / FOREST – very subtle
+        // 3. PARKS / FOREST – very subtle green tint
         {
             id: 'landuse-park',
             type: 'fill',
@@ -42,8 +42,8 @@ export const kartMapStyle: Style = {
             'source-layer': 'landuse',
             filter: ['in', 'class', 'park', 'pitch', 'grass'],
             paint: {
-                'fill-color': '#eef2ee',
-                'fill-opacity': 0.4,
+                'fill-color': '#F0F4F0',
+                'fill-opacity': 0.35,
             },
         },
         {
@@ -53,20 +53,20 @@ export const kartMapStyle: Style = {
             'source-layer': 'landcover',
             filter: ['in', 'class', 'wood', 'grass', 'scrub'],
             paint: {
-                'fill-color': '#edf1ed',
-                'fill-opacity': 0.35,
+                'fill-color': '#EFF3EF',
+                'fill-opacity': 0.3,
             },
         },
 
-        // 4. WATER – very toned down
+        // 4. WATER – very subtle blue-gray
         {
             id: 'water',
             type: 'fill',
             source: 'composite',
             'source-layer': 'water',
             paint: {
-                'fill-color': '#e8eef4',
-                'fill-opacity': 0.6,
+                'fill-color': '#EDF1F7',
+                'fill-opacity': 0.5,
             },
         },
         {
@@ -75,9 +75,9 @@ export const kartMapStyle: Style = {
             source: 'composite',
             'source-layer': 'waterway',
             paint: {
-                'line-color': '#dce4ed',
-                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 15, 1],
-                'line-opacity': 0.4,
+                'line-color': '#E2E8F0',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 15, 0.8],
+                'line-opacity': 0.3,
             },
             layout: {
                 'line-cap': 'round',
@@ -85,7 +85,7 @@ export const kartMapStyle: Style = {
             },
         },
 
-        // 5. ROADS – extremely subtle, no color
+        // 5. ROADS – ghosted
         {
             id: 'road-minor',
             type: 'line',
@@ -93,9 +93,9 @@ export const kartMapStyle: Style = {
             'source-layer': 'road',
             filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'street', 'service', 'path'],
             paint: {
-                'line-color': '#e5e7eb',
-                'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.3, 15, 1.5],
-                'line-opacity': 0.5,
+                'line-color': '#E2E8F0',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.2, 15, 1],
+                'line-opacity': 0.35,
             },
             layout: {
                 'line-cap': 'round',
@@ -109,9 +109,9 @@ export const kartMapStyle: Style = {
             'source-layer': 'road',
             filter: ['in', 'class', 'motorway', 'motorway_link'],
             paint: {
-                'line-color': '#d1d5db',
-                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.3, 10, 0.6, 15, 2],
-                'line-opacity': 0.4,
+                'line-color': '#E2E8F0',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.2, 10, 0.5, 15, 1.5],
+                'line-opacity': 0.3,
             },
             layout: {
                 'line-cap': 'round',
@@ -125,9 +125,9 @@ export const kartMapStyle: Style = {
             'source-layer': 'road',
             filter: ['in', 'class', 'trunk', 'trunk_link'],
             paint: {
-                'line-color': '#d1d5db',
-                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.25, 10, 0.5, 15, 1.6],
-                'line-opacity': 0.4,
+                'line-color': '#E2E8F0',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 0.2, 10, 0.4, 15, 1.2],
+                'line-opacity': 0.3,
             },
             layout: {
                 'line-cap': 'round',
@@ -135,15 +135,15 @@ export const kartMapStyle: Style = {
             },
         },
 
-        // 6. BUILDINGS – flat, barely visible
+        // 6. BUILDINGS – ghosted
         {
             id: 'building',
             type: 'fill',
             source: 'composite',
             'source-layer': 'building',
             paint: {
-                'fill-color': '#ebedf0',
-                'fill-opacity': 0.3,
+                'fill-color': '#E2E8F0',
+                'fill-opacity': 0.2,
             },
         },
 

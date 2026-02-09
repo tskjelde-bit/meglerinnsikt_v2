@@ -2,9 +2,9 @@
   height: 64px;
   background-color: #ffffff;
   border-radius: 0;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   border: none;
-  border-bottom: 1px solid #eef0f4;
+  border-bottom: 1px solid #F1F5F9;
   margin: 0;
   display: flex;
   align-items: center;
@@ -37,8 +37,8 @@
   padding: 0 12px;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  font-weight: 500;
-  color: #475569;
+  font-weight: 700;
+  color: #2D4B5F;
   text-decoration: none;
   border-radius: 6px;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -65,39 +65,39 @@
   align-items: center;
 }
 
-/* Button Styles mimicking Roofstock */
+/* Button Styles */
 .btnSecondary {
   height: 36px;
   padding: 0 16px;
   border-radius: 6px;
   background-color: white;
-  color: #334155;
-  border: 1px solid #e2e8f0;
-  font-weight: 500;
+  color: #2D4B5F;
+  border: 1px solid #E2E8F0;
+  font-weight: 600;
   font-size: 13px;
   transition: all 0.2s ease;
 }
 
 .btnSecondary:hover {
-  border-color: #94a3b8;
-  background-color: #f8fafc;
+  border-color: #94A3B8;
+  background-color: #F8FAFC;
 }
 
 .btnPrimary {
   height: 36px;
   padding: 0 16px;
   border-radius: 6px;
-  background-color: #0f172a;
+  background-color: #3B82F6;
   color: white;
-  border: 1px solid #0f172a;
-  font-weight: 500;
+  border: 1px solid #3B82F6;
+  font-weight: 600;
   font-size: 13px;
   transition: all 0.2s ease;
 }
 
 .btnPrimary:hover {
-  background-color: #1e293b;
-  border-color: #1e293b;
+  background-color: #2563EB;
+  border-color: #2563EB;
 }
 
 /* Mobile Menu Overlay */
@@ -132,8 +132,8 @@
   font-size: 24px;
   font-weight: 400;
   padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
-  color: #111111;
+  border-bottom: 1px solid #F1F5F9;
+  color: #2D4B5F;
   display: flex;
   justify-content: space-between;
   align-items: center;
