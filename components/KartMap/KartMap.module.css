@@ -49,10 +49,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 4.5rem;
   font-weight: 900;
-  color: #2D4B5F;
+  font-style: italic;
   margin: 0;
   line-height: 1.05;
   letter-spacing: -0.055em;
+  background-image: linear-gradient(to right, #E8634A, #E8548A, #6366F1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .aboutText {
