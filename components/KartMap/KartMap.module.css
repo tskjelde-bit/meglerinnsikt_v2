@@ -49,10 +49,13 @@
   font-family: 'Inter', sans-serif;
   font-size: 4.5rem;
   font-weight: 900;
-  font-style: italic;
+  color: #2D4B5F;
   margin: 0;
   line-height: 1.05;
   letter-spacing: -0.055em;
+}
+
+.aboutTitleGradient {
   background-image: linear-gradient(to right, #E8634A, #E8548A, #6366F1);
   -webkit-background-clip: text;
   background-clip: text;

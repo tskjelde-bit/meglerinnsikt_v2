@@ -210,7 +210,7 @@ function KartMap() {
       {/* LEFT: Static about column */}
       <div className={classes.aboutColumn}>
         <div className={classes.columnUpper}>
-          <h1 className={classes.aboutTitle}>#1 Innsikt i BoligMarkedet</h1>
+          <h1 className={classes.aboutTitle}>#1 Innsikt i <span className={classes.aboutTitleGradient}>BoligMarkedet</span></h1>
           <p className={classes.aboutText}>Det du ønsker å vite om boligmarkedet. Motta min månedlige oppdatering på boligmarkedet i Oslo. Faglig og ærlig om fortid, nåtid og fremtid.</p>
         </div>
 
