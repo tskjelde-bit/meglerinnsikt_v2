@@ -126,14 +126,14 @@ const osloDefault = {
 
 // Choropleth color scale based on priceChange value
 const CHOROPLETH_SCALE: [number, string][] = [
-  [0, '#BFDBFE'],
-  [2, '#93C5FD'],
-  [3, '#60A5FA'],
-  [4, '#3B82F6'],
-  [5, '#2563EB'],
-  [6, '#1D4ED8'],
+  [0, '#DBEAFE'],
+  [2, '#BFDBFE'],
+  [3, '#93C5FD'],
+  [4, '#60A5FA'],
+  [5, '#3B82F6'],
+  [6, '#2563EB'],
 ];
-const CHOROPLETH_MAX = '#1E40AF';
+const CHOROPLETH_MAX = '#1D4ED8';
 
 function getChoroplethColor(priceChange: number): string {
   for (let i = CHOROPLETH_SCALE.length - 1; i >= 0; i--) {
