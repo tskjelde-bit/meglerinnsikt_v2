@@ -213,62 +213,6 @@ function KartMap() {
           <h1 className={classes.aboutTitle}>#1 Innsikt i<br/><span className={classes.aboutTitleGradient}>BoligMarkedet</span></h1>
           <p className={classes.aboutText}>Det du ønsker å vite om boligmarkedet. Motta min månedlige oppdatering på boligmarkedet i Oslo. Faglig og ærlig om fortid, nåtid og fremtid.</p>
 
-          <div className={classes.contactForm}>
-            <h3 className={classes.contactTitle}>Send meg en melding</h3>
-            <p className={classes.contactSubtitle}>Fyll inn kontaktinformasjonen din, og skriv kort hva du ønsker hjelp til. Jeg tar kontakt så snart jeg har anledning</p>
-
-            <div className={classes.contactFields}>
-              <div className={classes.contactGroup}>
-                <label className={classes.contactLabel}>Navn</label>
-                <input type="text" className={classes.contactInput} placeholder="Ditt navn" />
-              </div>
-
-              <div className={classes.contactRow}>
-                <input type="email" className={classes.contactInput} placeholder="Din e-post" />
-                <input type="tel" className={classes.contactInput} placeholder="Ditt telefonnummer" />
-              </div>
-
-              <div className={classes.contactGroup}>
-                <textarea className={classes.contactTextarea} rows={4} placeholder="Hva kan jeg hjelpe deg med?" />
-              </div>
-
-              <button type="button" className={classes.contactSubmit}>Send melding</button>
-            </div>
-          </div>
-        </div>
-
-        <div className={classes.columnLower}>
-          <div className={classes.aboutFeatures}>
-            <div className={classes.aboutFeature}>
-              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <div className={classes.aboutFeatureText}>
-                <p className={classes.aboutFeatureTitle}>Selgere</p>
-                <p className={classes.aboutFeatureDesc}>{displayData.sellerPoints[0]}</p>
-              </div>
-            </div>
-            <div className={classes.aboutFeature}>
-              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M16 8l-4 4-4-4" />
-              </svg>
-              <div className={classes.aboutFeatureText}>
-                <p className={classes.aboutFeatureTitle}>Kjøpere</p>
-                <p className={classes.aboutFeatureDesc}>{displayData.buyerPoints[0]}</p>
-              </div>
-            </div>
-            <div className={classes.aboutFeature}>
-              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-              <div className={classes.aboutFeatureText}>
-                <p className={classes.aboutFeatureTitle}>Meglere</p>
-                <p className={classes.aboutFeatureDesc}>Datadrevet innsikt for rådgivning</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
