@@ -148,40 +148,39 @@ function KartMap() {
       .catch(err => console.error('Error loading labels:', err));
   }, []);
 
-  // Blue-scale fill: calm blue for all bydeler
+  // Choropleth blue fills – solid colors per brand spec
   const fillColorExpression: any = (() => {
     const expr: any[] = ['case'];
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('rgba(59, 130, 246, 0.28)');
+        expr.push('#3B82F6'); // vibrant blue – selected
       } else if (hoveredDistrict === name) {
-        expr.push('rgba(59, 130, 246, 0.18)');
+        expr.push('#93C5FD'); // lighter blue – hover
       } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push('rgba(59, 130, 246, 0.06)');
+        expr.push('#DBEAFE'); // faded blue – dimmed
       } else {
-        expr.push('rgba(59, 130, 246, 0.10)');
+        expr.push('#60A5FA'); // blue accent – default
       }
     });
     expr.push('rgba(0, 0, 0, 0)');
     return expr;
   })();
 
+  // Outlines: white by default, blue on hover/selected
   const outlineColorExpression: any = (() => {
     const expr: any[] = ['case'];
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('rgba(59, 130, 246, 0.6)');
+        expr.push('#3B82F6');
       } else if (hoveredDistrict === name) {
-        expr.push('rgba(59, 130, 246, 0.4)');
-      } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push('rgba(148, 163, 184, 0.15)');
+        expr.push('#3B82F6');
       } else {
-        expr.push('rgba(148, 163, 184, 0.3)');
+        expr.push('#FFFFFF');
       }
     });
-    expr.push('rgba(148, 163, 184, 0.15)');
+    expr.push('#FFFFFF');
     return expr;
   })();
 
@@ -190,16 +189,14 @@ function KartMap() {
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push(2);
+        expr.push(2.5);
       } else if (hoveredDistrict === name) {
-        expr.push(1.5);
-      } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push(0.5);
+        expr.push(2.5);
       } else {
-        expr.push(0.8);
+        expr.push(1);
       }
     });
-    expr.push(0.5);
+    expr.push(1);
     return expr;
   })();
 
@@ -361,7 +358,7 @@ function KartMap() {
               <polyline
                 points="0,50 30,45 60,48 90,40 120,35 150,38 180,30 210,25 240,20 270,22 300,15"
                 fill="none"
-                stroke="#cbd5e1"
+                stroke="#3B82F6"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
