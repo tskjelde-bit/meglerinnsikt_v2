@@ -1,18 +1,37 @@
-/* ===== Full page – white bg, no borders ===== */
+/* ===== Full viewport – map as background ===== */
 .pageLayout {
-  display: grid;
-  grid-template-columns: 320px 1fr 320px;
-  height: calc(100vh - var(--app-shell-header-height, 64px));
-  background: #FFFFFF;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin-top: calc(-1 * var(--app-shell-header-height, 64px));
 }
 
-/* ===== Left column: About ===== */
+/* ===== Map: full viewport background ===== */
+.mapColumn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* ===== Left column: floats over map ===== */
 .aboutColumn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 100%;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 64px 48px;
-  gap: 32px;
+  padding: 80px 48px 64px 48px;
+  gap: 28px;
+  background: linear-gradient(to right, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
+  pointer-events: auto;
 }
 
 .aboutTitle {
@@ -21,24 +40,24 @@
   font-weight: 900;
   color: #0F172A;
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: -0.04em;
 }
 
 .aboutText {
   font-family: 'Inter', sans-serif;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 400;
-  color: #64748B;
-  line-height: 1.75;
+  color: #475569;
+  line-height: 1.7;
   margin: 0;
 }
 
 .aboutFeatures {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-top: 16px;
+  gap: 18px;
+  margin-top: 8px;
 }
 
 .aboutFeature {
@@ -48,8 +67,8 @@
 }
 
 .aboutFeatureIcon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #3B82F6;
   flex-shrink: 0;
   margin-top: 2px;
@@ -58,12 +77,12 @@
 .aboutFeatureText {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .aboutFeatureTitle {
   font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0F172A;
   margin: 0;
@@ -71,56 +90,35 @@
 
 .aboutFeatureDesc {
   font-family: 'Inter', sans-serif;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #94A3B8;
   margin: 0;
+  line-height: 1.5;
 }
 
-/* ===== Map column: center ===== */
-.mapColumn {
-  position: relative;
-  min-height: 0;
-}
-
-/* ===== Right column: Stats ===== */
+/* ===== Right column: floats over map ===== */
 .statsColumn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 64px 48px;
+  padding: 80px 48px 64px 48px;
   gap: 48px;
-}
-
-/* Panel header */
-.panelHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.panelTitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.panelSubtitle {
-  font-size: 0.75rem;
-  color: #94A3B8;
-  margin: 0;
-  font-weight: 400;
+  background: linear-gradient(to left, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
+  pointer-events: auto;
 }
 
 /* Key figures — vertical stack */
 .keyFigures {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
 }
 
 .keyFigure {
@@ -140,6 +138,7 @@
 }
 
 .keyFigureLabel {
+  font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
   color: #94A3B8;
   font-weight: 400;
@@ -148,56 +147,10 @@
 
 /* Status line */
 .statusLine {
-  font-size: 0.875rem;
-  color: #64748B;
-  line-height: 1.7;
-}
-
-/* Interpretation sections */
-.interpretSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.interpretTitle {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
-  font-weight: 700;
-  color: #0F172A;
-  margin: 0;
-}
-
-.interpretList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.interpretList li {
-  font-size: 0.8125rem;
-  color: #64748B;
-  line-height: 1.65;
-  padding-left: 12px;
-  position: relative;
-}
-
-.interpretList li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #CBD5E1;
-}
-
-.interpretDivider {
-  display: none;
+  color: #475569;
+  line-height: 1.7;
 }
 
 /* CTA button */
@@ -224,13 +177,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   font-weight: 700;
-  color: #2D4B5F;
+  color: #1E3A50;
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.2s ease, opacity 0.2s ease;
   text-align: center;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(255,255,255,0.6);
 }
 
 .mapLabel:hover {
@@ -246,6 +200,15 @@
   font-weight: 800;
   font-size: 0.65rem;
 }
+
+/* ===== Unused but kept for compat ===== */
+.panelHeader { display: none; }
+.panelTitle { display: none; }
+.panelSubtitle { display: none; }
+.interpretSection { display: none; }
+.interpretTitle { display: none; }
+.interpretList { display: none; }
+.interpretDivider { display: none; }
 
 /* ===== MODAL OVERLAY ===== */
 .modalOverlay {
@@ -304,6 +267,7 @@
 }
 
 .modalSubtitle {
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   color: #64748B;
   margin-top: 4px;
@@ -343,6 +307,7 @@
 }
 
 .formLabel {
+  font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   color: #334155;
@@ -384,6 +349,7 @@
 }
 
 .rangeValue {
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   color: #64748B;
   text-align: right;
@@ -407,6 +373,7 @@
   border: 1px solid #E2E8F0;
   border-radius: 10px;
   background: #F8FAFC;
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
   color: #475569;
@@ -432,11 +399,11 @@
   color: white;
   border: none;
   border-radius: 12px;
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
-  font-family: 'Inter', sans-serif;
   margin-top: 4px;
 }
 
@@ -446,13 +413,9 @@
 
 /* ===== MOBILE ===== */
 @media (max-width: 1024px) {
-  .pageLayout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 50vh auto;
-  }
-
   .aboutColumn {
-    padding: 32px 24px;
+    width: 260px;
+    padding: 80px 24px 48px 24px;
     gap: 20px;
   }
 
@@ -461,11 +424,19 @@
   }
 
   .statsColumn {
-    padding: 32px 24px;
-    gap: 32px;
+    width: 240px;
+    padding: 80px 24px 48px 24px;
+    gap: 28px;
   }
 
   .keyFigureValue {
     font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutColumn,
+  .statsColumn {
+    display: none;
   }
 }

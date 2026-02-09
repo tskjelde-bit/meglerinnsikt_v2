@@ -1,18 +1,19 @@
 .header {
   height: 64px;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 0;
   box-shadow: none;
   border: none;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid rgba(241, 245, 249, 0.6);
   margin: 0;
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 32px;
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: all 0.3s ease;
   max-width: none;
 }
 
@@ -24,8 +25,8 @@
 
 .navLinks {
   display: flex;
-  gap: 2px;
-  margin-left: 28px;
+  gap: 4px;
+  margin-left: 32px;
   height: 100%;
   align-items: center;
 }
@@ -34,19 +35,21 @@
   display: flex;
   align-items: center;
   height: 36px;
-  padding: 0 12px;
+  padding: 0 14px;
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #2D4B5F;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: background-color 0.2s ease, color 0.2s ease;
   cursor: pointer;
+  letter-spacing: -0.01em;
 }
 
 .linkItem:hover {
   background-color: rgba(0, 0, 0, 0.04);
+  color: #0F172A;
 }
 
 .chevron {
@@ -61,21 +64,24 @@
 .actions {
   margin-left: auto;
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
 }
 
 /* Button Styles */
 .btnSecondary {
   height: 36px;
-  padding: 0 16px;
-  border-radius: 6px;
+  padding: 0 18px;
+  border-radius: 8px;
   background-color: white;
-  color: #2D4B5F;
+  color: #334155;
   border: 1px solid #E2E8F0;
-  font-weight: 600;
-  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.8125rem;
   transition: all 0.2s ease;
+  cursor: pointer;
+  letter-spacing: -0.01em;
 }
 
 .btnSecondary:hover {
@@ -85,14 +91,17 @@
 
 .btnPrimary {
   height: 36px;
-  padding: 0 16px;
-  border-radius: 6px;
+  padding: 0 18px;
+  border-radius: 8px;
   background-color: #3B82F6;
   color: white;
   border: 1px solid #3B82F6;
-  font-weight: 600;
-  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.8125rem;
   transition: all 0.2s ease;
+  cursor: pointer;
+  letter-spacing: -0.01em;
 }
 
 .btnPrimary:hover {
@@ -129,11 +138,12 @@
 }
 
 .mobileLink {
-  font-size: 24px;
-  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
   padding: 20px 0;
   border-bottom: 1px solid #F1F5F9;
-  color: #2D4B5F;
+  color: #0F172A;
   display: flex;
   justify-content: space-between;
   align-items: center;
