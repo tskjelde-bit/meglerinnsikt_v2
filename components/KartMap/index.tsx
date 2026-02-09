@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Mapbox, { Marker, NavigationControl, Source, Layer, MapRef } from 'react-map-gl';
 import type mapboxgl from 'mapbox-gl';
 import { useMap } from '@/context/Map';
-import { snapMapStyle } from '@/components/Map/snapMapStyle';
+import { kartMapStyle } from './kartMapStyle';
 import { prefixPath } from '@/utils/path';
 import classes from './KartMap.module.css';
 
@@ -114,22 +114,18 @@ const districtData: Record<string, {
   },
 };
 
+// Oslo-wide default data
+const osloDefault = {
+  statusText: 'Hovedstaden er preget av høy etterspørsel og moderat prisvekst.',
+  priceChange: 2.8,
+  turnoverDays: 22,
+  sqmPrice: 92000,
+  sellerPoints: ['Stabil etterspørsel i de fleste bydeler', 'Moderat prisvekst gir forutsigbarhet'],
+  buyerPoints: ['Variert tilbud på tvers av bydeler', 'Klikk på en bydel for detaljert innsikt'],
+};
+
 // Oslo average for comparison
 const OSLO_AVG_PRICE_CHANGE = 2.8;
-
-function getDistrictColor(priceChange: number): string {
-  const diff = priceChange - OSLO_AVG_PRICE_CHANGE;
-  if (diff > 1.0) return 'rgba(34, 197, 94, 0.45)';   // Green: well above average
-  if (diff > -0.5) return 'rgba(148, 163, 184, 0.3)';  // Gray: around average
-  return 'rgba(239, 68, 68, 0.4)';                      // Red: below average
-}
-
-function getDistrictOutlineColor(priceChange: number): string {
-  const diff = priceChange - OSLO_AVG_PRICE_CHANGE;
-  if (diff > 1.0) return '#16a34a';
-  if (diff > -0.5) return '#94a3b8';
-  return '#dc2626';
-}
 
 function KartMap() {
   const { center, setCenter, selectedDistrict, setSelectedDistrict } = useMap();
@@ -152,40 +148,40 @@ function KartMap() {
       .catch(err => console.error('Error loading labels:', err));
   }, []);
 
-  // Build fill-color expression for bydeler based on price change
+  // Blue-scale fill: calm blue for all bydeler
   const fillColorExpression: any = (() => {
     const expr: any[] = ['case'];
-    Object.entries(districtData).forEach(([name, data]) => {
-      // Selected district: highlight
+    Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('rgba(59, 130, 246, 0.35)');
+        expr.push('rgba(59, 130, 246, 0.28)');
+      } else if (hoveredDistrict === name) {
+        expr.push('rgba(59, 130, 246, 0.18)');
       } else if (selectedDistrict && selectedDistrict !== name) {
-        // Dimmed when another district is selected
-        const base = getDistrictColor(data.priceChange);
-        expr.push(base.replace(/[\d.]+\)$/, '0.12)'));
+        expr.push('rgba(59, 130, 246, 0.06)');
       } else {
-        expr.push(getDistrictColor(data.priceChange));
+        expr.push('rgba(59, 130, 246, 0.10)');
       }
     });
-    // Default fallback
-    expr.push('rgba(148, 163, 184, 0.15)');
+    expr.push('rgba(0, 0, 0, 0)');
     return expr;
   })();
 
   const outlineColorExpression: any = (() => {
     const expr: any[] = ['case'];
-    Object.entries(districtData).forEach(([name, data]) => {
+    Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('#2563eb');
+        expr.push('rgba(59, 130, 246, 0.6)');
+      } else if (hoveredDistrict === name) {
+        expr.push('rgba(59, 130, 246, 0.4)');
       } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push('rgba(148, 163, 184, 0.3)');
+        expr.push('rgba(148, 163, 184, 0.15)');
       } else {
-        expr.push(getDistrictOutlineColor(data.priceChange));
+        expr.push('rgba(148, 163, 184, 0.3)');
       }
     });
-    expr.push('rgba(148, 163, 184, 0.3)');
+    expr.push('rgba(148, 163, 184, 0.15)');
     return expr;
   })();
 
@@ -194,11 +190,13 @@ function KartMap() {
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push(3);
+        expr.push(2);
+      } else if (hoveredDistrict === name) {
+        expr.push(1.5);
       } else if (selectedDistrict && selectedDistrict !== name) {
         expr.push(0.5);
       } else {
-        expr.push(1);
+        expr.push(0.8);
       }
     });
     expr.push(0.5);
@@ -233,207 +231,177 @@ function KartMap() {
   }, []);
 
   const currentData = selectedDistrict ? districtData[selectedDistrict] : null;
+  const displayData = currentData || osloDefault;
+  const displayName = selectedDistrict || 'Oslo';
 
   return (
-    <div className={classes.mapWrapper}>
-      <Mapbox
-        ref={mapRef}
-        initialViewState={{
-          latitude: 59.93,
-          longitude: 10.79,
-          zoom: 11.0,
-          bearing: 0,
-          pitch: 0,
-        }}
-        onMove={(evt) => setCenter(evt.viewState)}
-        onClick={onClick}
-        onMouseMove={onHover}
-        onMouseLeave={() => setHoveredDistrict(null)}
-        onLoad={() => setIsLoaded(true)}
-        interactiveLayerIds={['kart-bydel-polygons']}
-        cursor={hoveredDistrict ? 'pointer' : 'auto'}
-        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        mapStyle={snapMapStyle as any}
-        style={{ width: '100%', height: '100%' }}
-      >
-        <NavigationControl position="top-left" />
+    <div className={classes.pageLayout}>
+      {/* Map column */}
+      <div className={classes.mapColumn}>
+        <Mapbox
+          ref={mapRef}
+          initialViewState={{
+            latitude: 59.93,
+            longitude: 10.79,
+            zoom: 11.0,
+            bearing: 0,
+            pitch: 0,
+          }}
+          onMove={(evt) => setCenter(evt.viewState)}
+          onClick={onClick}
+          onMouseMove={onHover}
+          onMouseLeave={() => setHoveredDistrict(null)}
+          onLoad={() => setIsLoaded(true)}
+          interactiveLayerIds={['kart-bydel-polygons']}
+          cursor={hoveredDistrict ? 'pointer' : 'auto'}
+          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+          mapStyle={kartMapStyle as any}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <NavigationControl position="top-left" showCompass={false} />
 
-        {isLoaded && (
-          <>
-            <Source id="kart-oslo-bydeler" type="geojson" data={prefixPath('/oslo_bydeler.geojson?v=5')}>
-              <Layer
-                id="kart-bydel-polygons"
-                type="fill"
-                paint={{
-                  'fill-color': fillColorExpression,
-                  'fill-color-transition': { duration: 300 },
-                }}
-              />
-              <Layer
-                id="kart-bydel-outlines"
-                type="line"
-                paint={{
-                  'line-color': outlineColorExpression,
-                  'line-width': outlineWidthExpression,
-                  'line-color-transition': { duration: 300 },
-                  'line-width-transition': { duration: 300 },
-                }}
-              />
-            </Source>
+          {isLoaded && (
+            <>
+              <Source id="kart-oslo-bydeler" type="geojson" data={prefixPath('/oslo_bydeler.geojson?v=5')}>
+                <Layer
+                  id="kart-bydel-polygons"
+                  type="fill"
+                  paint={{
+                    'fill-color': fillColorExpression,
+                    'fill-color-transition': { duration: 300 },
+                  }}
+                />
+                <Layer
+                  id="kart-bydel-outlines"
+                  type="line"
+                  paint={{
+                    'line-color': outlineColorExpression,
+                    'line-width': outlineWidthExpression,
+                    'line-color-transition': { duration: 300 },
+                    'line-width-transition': { duration: 300 },
+                  }}
+                />
+              </Source>
 
-            {/* District name labels as markers */}
-            {labelFeatures.map((feature, index) => {
-              const name = feature.properties?.BYDELSNAVN;
-              const coords = feature.geometry.coordinates;
-              if (!name || !coords) return null;
+              {/* Discrete text labels — no pins, no background */}
+              {labelFeatures.map((feature, index) => {
+                const name = feature.properties?.BYDELSNAVN;
+                const coords = feature.geometry.coordinates;
+                if (!name || !coords) return null;
 
-              const isSelected = name === selectedDistrict;
-              const isDimmed = !!selectedDistrict && !isSelected;
+                const isSelected = name === selectedDistrict;
+                const isDimmed = !!selectedDistrict && !isSelected;
 
-              return (
-                <Marker
-                  key={`kart-label-${index}`}
-                  latitude={coords[1]}
-                  longitude={coords[0]}
-                  style={{ zIndex: isSelected ? 100 : 10 }}
-                >
-                  <div
-                    className={`${classes.mapLabel} ${isSelected ? classes.mapLabelActive : ''} ${isDimmed ? classes.mapLabelDimmed : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (districtData[name]) {
-                        setSelectedDistrict(name);
-                        setPanelOpen(true);
-                      }
-                    }}
+                return (
+                  <Marker
+                    key={`kart-label-${index}`}
+                    latitude={coords[1]}
+                    longitude={coords[0]}
+                    style={{ zIndex: isSelected ? 100 : 10 }}
                   >
-                    {name}
-                  </div>
-                </Marker>
-              );
-            })}
-          </>
-        )}
-      </Mapbox>
-
-      {/* Legend */}
-      <div className={classes.legend}>
-        Farge viser prisutvikling hittil i år relativt til Oslo-snitt
-        <div className={classes.legendDots}>
-          <div className={classes.legendDot}>
-            <span style={{ background: '#22c55e' }} /> Over snitt
-          </div>
-          <div className={classes.legendDot}>
-            <span style={{ background: '#94a3b8' }} /> Rundt snitt
-          </div>
-          <div className={classes.legendDot}>
-            <span style={{ background: '#ef4444' }} /> Under snitt
-          </div>
-        </div>
+                    <div
+                      className={`${classes.mapLabel} ${isSelected ? classes.mapLabelActive : ''} ${isDimmed ? classes.mapLabelDimmed : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (districtData[name]) {
+                          setSelectedDistrict(name);
+                          setPanelOpen(true);
+                        }
+                      }}
+                    >
+                      {name}
+                    </div>
+                  </Marker>
+                );
+              })}
+            </>
+          )}
+        </Mapbox>
       </div>
 
-      {/* ===== Side Panel ===== */}
-      <div className={`${classes.sidePanel} ${panelOpen && currentData ? classes.open : ''}`}>
-        <div className={classes.panelHeader}>
-          <h2 className={classes.panelTitle}>
-            {selectedDistrict} – markedsstatus nå
-          </h2>
-          <button className={classes.panelClose} onClick={closePanel} aria-label="Lukk panel">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M18 6L6 18M6 6l12 12" />
+      {/* Side panel column — always visible */}
+      <div className={classes.sidePanel}>
+        <div className={classes.panelInner}>
+          {/* Header */}
+          <div className={classes.panelHeader}>
+            <h2 className={classes.panelTitle}>
+              {displayName}
+            </h2>
+            <p className={classes.panelSubtitle}>Markedsstatus nå</p>
+          </div>
+
+          {/* Status line */}
+          <div className={classes.statusLine}>
+            {displayData.statusText}
+          </div>
+
+          {/* Key figures */}
+          <div className={classes.keyFigures}>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>
+                {displayData.priceChange > 0 ? '+' : ''}{displayData.priceChange.toFixed(1)}%
+              </div>
+              <div className={classes.keyFigureLabel}>Prisendring i år</div>
+            </div>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>{displayData.turnoverDays}</div>
+              <div className={classes.keyFigureLabel}>Dager omsetning</div>
+            </div>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>
+                {(displayData.sqmPrice / 1000).toFixed(0)}k
+              </div>
+              <div className={classes.keyFigureLabel}>Kr/m²</div>
+            </div>
+          </div>
+
+          {/* Mini graph placeholder */}
+          <div className={classes.graphPlaceholder}>
+            <svg className={classes.graphLine} viewBox="0 0 300 60" preserveAspectRatio="none">
+              <polyline
+                points="0,50 30,45 60,48 90,40 120,35 150,38 180,30 210,25 240,20 270,22 300,15"
+                fill="none"
+                stroke="#cbd5e1"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
-          </button>
-        </div>
+            <div className={classes.graphLabel}>Siste 12 mnd</div>
+          </div>
 
-        {currentData && (
-          <div className={classes.panelBody}>
-            {/* 2. Status line */}
-            <div className={classes.statusLine}>
-              {currentData.statusText}
-            </div>
+          {/* Interpretation */}
+          <div className={classes.interpretSection}>
+            <h3 className={classes.interpretTitle}>
+              Dette betyr for selger
+            </h3>
+            <ul className={classes.interpretList}>
+              {displayData.sellerPoints.map((point, i) => (
+                <li key={`seller-${i}`}>{point}</li>
+              ))}
+            </ul>
+          </div>
 
-            {/* 3. Key figures */}
-            <div className={classes.keyFigures}>
-              <div className={classes.keyFigure}>
-                <svg className={classes.keyFigureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <div className={classes.keyFigureValue}>
-                  {currentData.priceChange > 0 ? '+' : ''}{currentData.priceChange.toFixed(1)}%
-                </div>
-                <div className={classes.keyFigureLabel}>Prisendring i år</div>
-              </div>
-              <div className={classes.keyFigure}>
-                <svg className={classes.keyFigureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <div className={classes.keyFigureValue}>{currentData.turnoverDays}</div>
-                <div className={classes.keyFigureLabel}>Dager omsetning</div>
-              </div>
-              <div className={classes.keyFigure}>
-                <svg className={classes.keyFigureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <div className={classes.keyFigureValue}>
-                  {(currentData.sqmPrice / 1000).toFixed(0)}k
-                </div>
-                <div className={classes.keyFigureLabel}>Kr/m²</div>
-              </div>
-            </div>
+          <div className={classes.interpretDivider} />
 
-            {/* 4. Mini graph placeholder */}
-            <div className={classes.graphPlaceholder}>
-              <svg className={classes.graphLine} viewBox="0 0 300 60" preserveAspectRatio="none">
-                <polyline
-                  points="0,50 30,45 60,48 90,40 120,35 150,38 180,30 210,25 240,20 270,22 300,15"
-                  fill="none"
-                  stroke="#cbd5e1"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div className={classes.graphLabel}>Siste 12 mnd</div>
-            </div>
+          <div className={classes.interpretSection}>
+            <h3 className={classes.interpretTitle}>
+              Dette betyr for kjøper
+            </h3>
+            <ul className={classes.interpretList}>
+              {displayData.buyerPoints.map((point, i) => (
+                <li key={`buyer-${i}`}>{point}</li>
+              ))}
+            </ul>
+          </div>
 
-            {/* 5. Interpretation */}
-            <div className={classes.interpretSection}>
-              <h3 className={classes.interpretTitle}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Dette betyr for selger
-              </h3>
-              <ul className={classes.interpretList}>
-                {currentData.sellerPoints.map((point, i) => (
-                  <li key={`seller-${i}`}>{point}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className={classes.interpretDivider} />
-
-            <div className={classes.interpretSection}>
-              <h3 className={classes.interpretTitle}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
-                  <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Dette betyr for kjøper
-              </h3>
-              <ul className={classes.interpretList}>
-                {currentData.buyerPoints.map((point, i) => (
-                  <li key={`buyer-${i}`}>{point}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 6. CTA */}
+          {/* CTA */}
+          {currentData && (
             <button className={classes.ctaButton} onClick={openModal}>
               Hva betyr dette for min bolig?
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* ===== Form Modal ===== */}
