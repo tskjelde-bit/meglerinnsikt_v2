@@ -212,6 +212,42 @@ function KartMap() {
         <div className={classes.columnUpper}>
           <h1 className={classes.aboutTitle}>#1 Innsikt i<br/><span className={classes.aboutTitleGradient}>BoligMarkedet</span></h1>
           <p className={classes.aboutText}>Det du ønsker å vite om boligmarkedet. Motta min månedlige oppdatering på boligmarkedet i Oslo. Faglig og ærlig om fortid, nåtid og fremtid.</p>
+
+          <div className={classes.contactForm}>
+            <h3 className={classes.contactTitle}>Send meg en melding</h3>
+            <p className={classes.contactSubtitle}>Fyll inn kontaktinformasjonen din, og skriv kort hva du ønsker hjelp til. Jeg tar kontakt så snart jeg har anledning</p>
+
+            <div className={classes.contactFields}>
+              <div className={classes.contactGroup}>
+                <label className={classes.contactLabel}>Navn</label>
+                <input type="text" className={classes.contactInput} placeholder="Ditt navn" />
+              </div>
+
+              <div className={classes.contactRow}>
+                <input type="email" className={classes.contactInput} placeholder="Din e-post" />
+                <input type="tel" className={classes.contactInput} placeholder="Ditt telefonnummer" />
+              </div>
+
+              <div className={classes.contactGroup}>
+                <label className={classes.contactLabel}>Hva gjelder henvendelsen?</label>
+                <select className={classes.contactSelect} defaultValue="">
+                  <option value="" disabled>Velg kategori</option>
+                  <option value="salg">Salg av bolig</option>
+                  <option value="kjop">Kjøp av bolig</option>
+                  <option value="verdivurdering">Verdivurdering</option>
+                  <option value="annet">Annet</option>
+                </select>
+                <span className={classes.contactHint}>Velg det som passer best – du kan alltid forklare mer i meldingsfeltet</span>
+              </div>
+
+              <div className={classes.contactGroup}>
+                <label className={classes.contactLabel}>Hva kan jeg hjelpe deg med?</label>
+                <textarea className={classes.contactTextarea} rows={4} placeholder="Skriv gjerne litt om bolig, tidspunkt og hva du vurderer." />
+              </div>
+
+              <button type="button" className={classes.contactSubmit}>Send melding</button>
+            </div>
+          </div>
         </div>
 
         <div className={classes.columnLower}>
