@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Group, Burger, Text, Button, Menu, UnstyledButton, Collapse, Image } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconPlus, IconMinus } from '@tabler/icons-react';
@@ -32,6 +32,14 @@ const menuItems = [
 export function Header() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 10);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     const toggleDropdown = (label: string) => {
         setActiveDropdown(activeDropdown === label ? null : label);
@@ -95,7 +103,7 @@ export function Header() {
 
     return (
         <>
-            <header className={classes.header}>
+            <header className={`${classes.header} ${scrolled ? classes.headerScrolled : ''}`}>
                 <div className={classes.logo}>
                     {/* UPDATED: Path prefix for logo */}
                     <Image src={prefixPath('/meglerinnsikt_logo.png')} alt="Meglerinnsikt Logo" h={35} w="auto" fit="contain" />
