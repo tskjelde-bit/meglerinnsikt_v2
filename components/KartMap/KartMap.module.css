@@ -22,7 +22,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 430px;
+  width: 480px;
   height: 100%;
   z-index: 10;
   display: flex;
@@ -120,13 +120,13 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 400px;
+  width: 320px;
   height: 100%;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px clamp(56px, 5vw, 128px) 80px 48px;
+  padding: 80px 48px 80px 24px;
   gap: 32px;
   background: linear-gradient(to left, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
   pointer-events: auto;
@@ -443,7 +443,7 @@
 /* ===== MOBILE ===== */
 @media (max-width: 1024px) {
   .aboutColumn {
-    width: 320px;
+    width: 340px;
     padding: 120px 32px 48px 40px;
   }
 
@@ -452,8 +452,8 @@
   }
 
   .statsColumn {
-    width: 300px;
-    padding: 120px 40px 48px 32px;
+    width: 240px;
+    padding: 120px 32px 48px 20px;
   }
 
   .keyFigureValue {
