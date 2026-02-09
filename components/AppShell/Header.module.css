@@ -1,22 +1,19 @@
 .header {
-  height: 80px;
+  height: 64px;
   background-color: #ffffff;
-  border-radius: 1.2rem;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  margin-top: 16px;
-  margin-left: 16px;
-  margin-right: 16px;
+  border-radius: 0;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  border: none;
+  border-bottom: 1px solid #eef0f4;
+  margin: 0;
   display: flex;
   align-items: center;
-  padding: 0 32px;
+  padding: 0 24px;
   position: sticky;
-  top: 16px;
+  top: 0;
   z-index: 100;
   transition: all 0.3s ease;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
 }
 
 .logo {
@@ -27,8 +24,8 @@
 
 .navLinks {
   display: flex;
-  gap: 8px;
-  margin-left: 48px;
+  gap: 2px;
+  margin-left: 28px;
   height: 100%;
   align-items: center;
 }
@@ -36,16 +33,15 @@
 .linkItem {
   display: flex;
   align-items: center;
-  height: 48px;
-  padding: 0 16px;
+  height: 36px;
+  padding: 0 12px;
   font-family: 'Inter', sans-serif;
-  /* Fallback for Helvetica Now Text */
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: #111111;
+  color: #475569;
   text-decoration: none;
-  border-radius: 24px;
-  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
   cursor: pointer;
 }
 
@@ -71,37 +67,37 @@
 
 /* Button Styles mimicking Roofstock */
 .btnSecondary {
-  height: 48px;
-  padding: 0 24px;
+  height: 36px;
+  padding: 0 16px;
   border-radius: 6px;
   background-color: white;
-  color: #111111;
-  border: 1px solid #e5e5e5;
+  color: #334155;
+  border: 1px solid #e2e8f0;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 13px;
   transition: all 0.2s ease;
 }
 
 .btnSecondary:hover {
-  border-color: #111111;
-  background-color: #fafafa;
+  border-color: #94a3b8;
+  background-color: #f8fafc;
 }
 
 .btnPrimary {
-  height: 48px;
-  padding: 0 24px;
+  height: 36px;
+  padding: 0 16px;
   border-radius: 6px;
-  background-color: #111111;
+  background-color: #0f172a;
   color: white;
-  border: 1px solid #111111;
+  border: 1px solid #0f172a;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 13px;
   transition: all 0.2s ease;
 }
 
 .btnPrimary:hover {
-  background-color: #333333;
-  border-color: #333333;
+  background-color: #1e293b;
+  border-color: #1e293b;
 }
 
 /* Mobile Menu Overlay */
@@ -158,8 +154,8 @@
 
 @media (max-width: 1024px) {
   .header {
-    height: 70px;
-    padding: 0 20px;
+    height: 56px;
+    padding: 0 16px;
   }
 
   .navLinks,
