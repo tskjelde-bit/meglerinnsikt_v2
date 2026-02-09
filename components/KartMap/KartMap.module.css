@@ -197,9 +197,10 @@
 }
 
 .mapLabelActive {
-  color: #3B82F6;
-  font-weight: 800;
+  color: #FFFFFF;
+  font-weight: 900;
   font-size: 0.65rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== Unused but kept for compat ===== */
