@@ -5,6 +5,7 @@
   height: 100vh;
   overflow: hidden;
   margin-top: calc(-1 * var(--app-shell-header-height, 64px));
+  --content-inset: max(0px, calc((100vw - 1400px) / 2));
 }
 
 /* ===== Map: full viewport background ===== */
@@ -21,7 +22,7 @@
 .aboutColumn {
   position: absolute;
   top: 0;
-  left: 0;
+  left: var(--content-inset);
   width: 430px;
   height: 100%;
   z-index: 10;
@@ -101,7 +102,7 @@
 .statsColumn {
   position: absolute;
   top: 0;
-  right: 0;
+  right: var(--content-inset);
   width: 400px;
   height: 100%;
   z-index: 10;
