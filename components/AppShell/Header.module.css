@@ -7,7 +7,7 @@
   margin: 0;
   display: flex;
   align-items: center;
-  padding: 0 32px;
+  padding: 0 48px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -35,8 +35,8 @@
   padding: 0 14px;
   font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
-  font-weight: 600;
-  color: #0F172A;
+  font-weight: 700;
+  color: #2D4B5F;
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.2s ease, color 0.2s ease;
