@@ -1,17 +1,22 @@
 .header {
-  height: 64px;
-  background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  border: none;
-  margin: 0;
+  height: 80px;
+  background-color: #ffffff;
+  border-radius: 1.2rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  margin-top: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   align-items: center;
-  padding: 0 clamp(48px, 4vw, 100px);
+  padding: 0 32px;
   position: sticky;
-  top: 0;
+  top: 16px;
   z-index: 100;
-  max-width: none;
+  transition: all 0.3s ease;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .logo {
@@ -22,8 +27,8 @@
 
 .navLinks {
   display: flex;
-  gap: 4px;
-  margin-left: 32px;
+  gap: 8px;
+  margin-left: 48px;
   height: 100%;
   align-items: center;
 }
@@ -31,22 +36,21 @@
 .linkItem {
   display: flex;
   align-items: center;
-  height: 36px;
-  padding: 0 14px;
+  height: 48px;
+  padding: 0 16px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #2D4B5F;
+  /* Fallback for Helvetica Now Text */
+  font-size: 16px;
+  font-weight: 500;
+  color: #111111;
   text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 24px;
+  transition: background-color 0.2s ease;
   cursor: pointer;
-  letter-spacing: -0.01em;
 }
 
 .linkItem:hover {
   background-color: rgba(0, 0, 0, 0.04);
-  color: #0F172A;
 }
 
 .chevron {
@@ -61,49 +65,43 @@
 .actions {
   margin-left: auto;
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
 }
 
-/* Button Styles */
+/* Button Styles mimicking Roofstock */
 .btnSecondary {
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 8px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 6px;
   background-color: white;
-  color: #334155;
-  border: 1px solid #E2E8F0;
-  font-family: 'Inter', sans-serif;
+  color: #111111;
+  border: 1px solid #e5e5e5;
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 16px;
   transition: all 0.2s ease;
-  cursor: pointer;
-  letter-spacing: -0.01em;
 }
 
 .btnSecondary:hover {
-  border-color: #94A3B8;
-  background-color: #F8FAFC;
+  border-color: #111111;
+  background-color: #fafafa;
 }
 
 .btnPrimary {
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 8px;
-  background-color: #3B82F6;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 6px;
+  background-color: #111111;
   color: white;
-  border: 1px solid #3B82F6;
-  font-family: 'Inter', sans-serif;
+  border: 1px solid #111111;
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 16px;
   transition: all 0.2s ease;
-  cursor: pointer;
-  letter-spacing: -0.01em;
 }
 
 .btnPrimary:hover {
-  background-color: #2563EB;
-  border-color: #2563EB;
+  background-color: #333333;
+  border-color: #333333;
 }
 
 /* Mobile Menu Overlay */
@@ -135,12 +133,11 @@
 }
 
 .mobileLink {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 400;
   padding: 20px 0;
-  border-bottom: 1px solid #F1F5F9;
-  color: #0F172A;
+  border-bottom: 1px solid #f0f0f0;
+  color: #111111;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -161,8 +158,8 @@
 
 @media (max-width: 1024px) {
   .header {
-    height: 56px;
-    padding: 0 16px;
+    height: 70px;
+    padding: 0 20px;
   }
 
   .navLinks,
