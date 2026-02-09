@@ -2,7 +2,7 @@
 const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig = {
-  output: 'export',
+  output: isProd ? 'export' : undefined,
   basePath: isProd ? '/meglerinnsikt_v2' : '',
   assetPrefix: isProd ? '/meglerinnsikt_v2/' : '',
   images: {
