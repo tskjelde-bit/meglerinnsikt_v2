@@ -22,13 +22,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 340px;
+  width: 430px;
   height: 100%;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px 48px 64px 48px;
+  padding: 80px 56px 64px 72px;
   gap: 28px;
   background: linear-gradient(to right, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
   pointer-events: auto;
@@ -38,18 +38,18 @@
   font-family: 'Inter', sans-serif;
   font-size: 4.5rem;
   font-weight: 900;
-  color: #0F172A;
+  color: #2D4B5F;
   margin: 0;
-  line-height: 1.0;
-  letter-spacing: -0.05em;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
 }
 
 .aboutText {
   font-family: 'Inter', sans-serif;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 400;
   color: #475569;
-  line-height: 1.7;
+  line-height: 1.75;
   margin: 0;
 }
 
@@ -84,7 +84,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #0F172A;
+  color: #2D4B5F;
   margin: 0;
 }
 
@@ -102,13 +102,13 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 320px;
+  width: 400px;
   height: 100%;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px 48px 64px 48px;
+  padding: 80px 72px 64px 48px;
   gap: 48px;
   background: linear-gradient(to left, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
   pointer-events: auto;
@@ -131,9 +131,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 2.5rem;
   font-weight: 900;
-  color: #0F172A;
+  color: #2D4B5F;
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -148,9 +148,9 @@
 /* Status line */
 .statusLine {
   font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #475569;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 /* CTA button */
@@ -414,18 +414,18 @@
 /* ===== MOBILE ===== */
 @media (max-width: 1024px) {
   .aboutColumn {
-    width: 260px;
-    padding: 80px 24px 48px 24px;
+    width: 320px;
+    padding: 80px 32px 48px 40px;
     gap: 20px;
   }
 
   .aboutTitle {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 
   .statsColumn {
-    width: 240px;
-    padding: 80px 24px 48px 24px;
+    width: 300px;
+    padding: 80px 40px 48px 32px;
     gap: 28px;
   }
 
