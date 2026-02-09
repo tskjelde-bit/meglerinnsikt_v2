@@ -167,13 +167,11 @@ function KartMap() {
     Object.entries(districtData).forEach(([name, data]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('#2563EB');
+        expr.push('#2D4B5F');
       } else if (hoveredDistrict === name) {
         const natural = getChoroplethColor(data.priceChange);
         const idx = CHOROPLETH_SCALE.findIndex(([, c]) => c === natural);
         expr.push(idx < CHOROPLETH_SCALE.length - 1 ? CHOROPLETH_SCALE[idx + 1][1] : CHOROPLETH_MAX);
-      } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push('#E8EEF4');
       } else {
         expr.push(getChoroplethColor(data.priceChange));
       }
@@ -182,33 +180,8 @@ function KartMap() {
     return expr;
   })();
 
-  const outlineColorExpression: any = (() => {
-    const expr: any[] = ['case'];
-    Object.entries(districtData).forEach(([name]) => {
-      expr.push(['==', ['get', 'BYDELSNAVN'], name]);
-      if (selectedDistrict === name || hoveredDistrict === name) {
-        expr.push('#3B82F6');
-      } else {
-        expr.push('#FFFFFF');
-      }
-    });
-    expr.push('#FFFFFF');
-    return expr;
-  })();
-
-  const outlineWidthExpression: any = (() => {
-    const expr: any[] = ['case'];
-    Object.entries(districtData).forEach(([name]) => {
-      expr.push(['==', ['get', 'BYDELSNAVN'], name]);
-      if (selectedDistrict === name || hoveredDistrict === name) {
-        expr.push(2.5);
-      } else {
-        expr.push(1);
-      }
-    });
-    expr.push(1);
-    return expr;
-  })();
+  const outlineColorExpression = '#FFFFFF';
+  const outlineWidthExpression = 1;
 
   const onHover = useCallback((event: mapboxgl.MapLayerMouseEvent) => {
     const feature = event.features?.[0];
@@ -330,7 +303,6 @@ function KartMap() {
                 const coords = feature.geometry.coordinates;
                 if (!name || !coords) return null;
                 const isSelected = name === selectedDistrict;
-                const isDimmed = !!selectedDistrict && !isSelected;
                 return (
                   <Marker
                     key={`kart-label-${index}`}
@@ -339,7 +311,7 @@ function KartMap() {
                     style={{ zIndex: isSelected ? 100 : 10 }}
                   >
                     <div
-                      className={`${classes.mapLabel} ${isSelected ? classes.mapLabelActive : ''} ${isDimmed ? classes.mapLabelDimmed : ''}`}
+                      className={`${classes.mapLabel} ${isSelected ? classes.mapLabelActive : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (districtData[name]) setSelectedDistrict(name);
