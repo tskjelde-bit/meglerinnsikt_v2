@@ -255,7 +255,7 @@ function KartMap() {
           ref={mapRef}
           initialViewState={{
             latitude: 59.93,
-            longitude: 10.85,
+            longitude: 10.88,
             zoom: 10.4,
             bearing: 0,
             pitch: 0,
