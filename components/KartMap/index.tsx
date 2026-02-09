@@ -229,20 +229,7 @@ function KartMap() {
               </div>
 
               <div className={classes.contactGroup}>
-                <label className={classes.contactLabel}>Hva gjelder henvendelsen?</label>
-                <select className={classes.contactSelect} defaultValue="">
-                  <option value="" disabled>Velg kategori</option>
-                  <option value="salg">Salg av bolig</option>
-                  <option value="kjop">Kjøp av bolig</option>
-                  <option value="verdivurdering">Verdivurdering</option>
-                  <option value="annet">Annet</option>
-                </select>
-                <span className={classes.contactHint}>Velg det som passer best – du kan alltid forklare mer i meldingsfeltet</span>
-              </div>
-
-              <div className={classes.contactGroup}>
-                <label className={classes.contactLabel}>Hva kan jeg hjelpe deg med?</label>
-                <textarea className={classes.contactTextarea} rows={4} placeholder="Skriv gjerne litt om bolig, tidspunkt og hva du vurderer." />
+                <textarea className={classes.contactTextarea} rows={4} placeholder="Hva kan jeg hjelpe deg med?" />
               </div>
 
               <button type="button" className={classes.contactSubmit}>Send melding</button>
