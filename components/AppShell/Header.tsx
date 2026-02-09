@@ -43,7 +43,7 @@ export function Header() {
                 <Menu key={item.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
                     <Menu.Target>
                         <UnstyledButton className={classes.linkItem}>
-                            <Text span fw={500} size="sm">{item.label}</Text>
+                            <Text span inherit>{item.label}</Text>
                             <IconChevronDown size={14} className={classes.chevron} stroke={2} />
                         </UnstyledButton>
                     </Menu.Target>
@@ -60,7 +60,7 @@ export function Header() {
 
         return (
             <Link key={item.label} href={item.link} className={classes.linkItem}>
-                <Text span fw={500} size="sm">{item.label}</Text>
+                <Text span inherit>{item.label}</Text>
             </Link>
         );
     });
