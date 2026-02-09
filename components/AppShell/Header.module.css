@@ -5,8 +5,8 @@
   box-shadow: none;
   border: 1px solid transparent;
   margin-top: 16px;
-  margin-left: clamp(56px, 5vw, 128px);
-  margin-right: clamp(56px, 5vw, 128px);
+  margin-left: clamp(24px, calc(5vw - 32px), 96px);
+  margin-right: clamp(24px, calc(5vw - 32px), 96px);
   display: flex;
   align-items: center;
   padding: 0 32px;
