@@ -10,7 +10,7 @@
 /* ===== Map: full viewport background ===== */
 .mapColumn {
   position: absolute;
-  top: 0;
+  top: -80px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -27,11 +27,22 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 80px 56px 64px clamp(56px, 5vw, 128px);
-  gap: 28px;
+  justify-content: space-between;
+  padding: 160px 56px 80px clamp(56px, 5vw, 128px);
   background: linear-gradient(to right, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
   pointer-events: auto;
+}
+
+.columnUpper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.columnLower {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .aboutTitle {
@@ -107,9 +118,8 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 80px clamp(56px, 5vw, 128px) 64px 48px;
-  gap: 24px;
+  justify-content: space-between;
+  padding: 160px clamp(56px, 5vw, 128px) 80px 48px;
   background: linear-gradient(to left, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0) 100%);
   pointer-events: auto;
 }
@@ -426,8 +436,7 @@
 @media (max-width: 1024px) {
   .aboutColumn {
     width: 320px;
-    padding: 80px 32px 48px 40px;
-    gap: 20px;
+    padding: 120px 32px 48px 40px;
   }
 
   .aboutTitle {
@@ -436,8 +445,7 @@
 
   .statsColumn {
     width: 300px;
-    padding: 80px 40px 48px 32px;
-    gap: 16px;
+    padding: 120px 40px 48px 32px;
   }
 
   .keyFigureValue {

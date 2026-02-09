@@ -209,8 +209,44 @@ function KartMap() {
     <div className={classes.pageLayout}>
       {/* LEFT: Static about column */}
       <div className={classes.aboutColumn}>
-        <h1 className={classes.aboutTitle}>Innsikt som skaper verdi</h1>
-        <p className={classes.aboutText}>Det du ønsker å vite om boligmarkedet. Motta min månedlige oppdatering på boligmarkedet i Oslo. Faglig og ærlig om fortid, nåtid og fremtid.</p>
+        <div className={classes.columnUpper}>
+          <h1 className={classes.aboutTitle}>Innsikt som skaper verdi</h1>
+          <p className={classes.aboutText}>Det du ønsker å vite om boligmarkedet. Motta min månedlige oppdatering på boligmarkedet i Oslo. Faglig og ærlig om fortid, nåtid og fremtid.</p>
+        </div>
+
+        <div className={classes.columnLower}>
+          <div className={classes.aboutFeatures}>
+            <div className={classes.aboutFeature}>
+              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <div className={classes.aboutFeatureText}>
+                <p className={classes.aboutFeatureTitle}>Selgere</p>
+                <p className={classes.aboutFeatureDesc}>{displayData.sellerPoints[0]}</p>
+              </div>
+            </div>
+            <div className={classes.aboutFeature}>
+              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M16 8l-4 4-4-4" />
+              </svg>
+              <div className={classes.aboutFeatureText}>
+                <p className={classes.aboutFeatureTitle}>Kjøpere</p>
+                <p className={classes.aboutFeatureDesc}>{displayData.buyerPoints[0]}</p>
+              </div>
+            </div>
+            <div className={classes.aboutFeature}>
+              <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+              <div className={classes.aboutFeatureText}>
+                <p className={classes.aboutFeatureTitle}>Meglere</p>
+                <p className={classes.aboutFeatureDesc}>Datadrevet innsikt for rådgivning</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* CENTER: Map */}
@@ -291,62 +327,34 @@ function KartMap() {
 
       {/* RIGHT: Dynamic stats column */}
       <div className={classes.statsColumn}>
-        <h2 className={classes.statsTitle}>{displayName}</h2>
-
-        <div className={classes.keyFigures}>
-          <div className={classes.keyFigure}>
-            <div className={classes.keyFigureValue}>
-              {displayData.priceChange > 0 ? '+' : ''}{displayData.priceChange.toFixed(1)}%
+        <div className={classes.columnUpper}>
+          <h2 className={classes.statsTitle}>{displayName}</h2>
+          <div className={classes.keyFigures}>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>
+                {displayData.priceChange > 0 ? '+' : ''}{displayData.priceChange.toFixed(1)}%
+              </div>
+              <div className={classes.keyFigureLabel}>Prisendring i år</div>
             </div>
-            <div className={classes.keyFigureLabel}>Prisendring i år</div>
-          </div>
-          <div className={classes.keyFigure}>
-            <div className={classes.keyFigureValue}>{displayData.turnoverDays}</div>
-            <div className={classes.keyFigureLabel}>Dager omsetning</div>
-          </div>
-          <div className={classes.keyFigure}>
-            <div className={classes.keyFigureValue}>{fmtSqm(displayData.sqmPrice)}</div>
-            <div className={classes.keyFigureLabel}>Kr/m²</div>
-          </div>
-        </div>
-
-        <div className={classes.aboutFeatures}>
-          <div className={classes.aboutFeature}>
-            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-            <div className={classes.aboutFeatureText}>
-              <p className={classes.aboutFeatureTitle}>Selgere</p>
-              <p className={classes.aboutFeatureDesc}>{displayData.sellerPoints[0]}</p>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>{displayData.turnoverDays}</div>
+              <div className={classes.keyFigureLabel}>Dager omsetning</div>
             </div>
-          </div>
-          <div className={classes.aboutFeature}>
-            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M16 8l-4 4-4-4" />
-            </svg>
-            <div className={classes.aboutFeatureText}>
-              <p className={classes.aboutFeatureTitle}>Kjøpere</p>
-              <p className={classes.aboutFeatureDesc}>{displayData.buyerPoints[0]}</p>
-            </div>
-          </div>
-          <div className={classes.aboutFeature}>
-            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-            <div className={classes.aboutFeatureText}>
-              <p className={classes.aboutFeatureTitle}>Meglere</p>
-              <p className={classes.aboutFeatureDesc}>Datadrevet innsikt for rådgivning</p>
+            <div className={classes.keyFigure}>
+              <div className={classes.keyFigureValue}>{fmtSqm(displayData.sqmPrice)}</div>
+              <div className={classes.keyFigureLabel}>Kr/m²</div>
             </div>
           </div>
         </div>
 
-        {currentData && (
-          <button className={classes.ctaButton} onClick={openModal}>
-            Hva betyr dette for min bolig?
-          </button>
-        )}
+        <div className={classes.columnLower}>
+          <p className={classes.statusLine}>{displayData.statusText}</p>
+          {currentData && (
+            <button className={classes.ctaButton} onClick={openModal}>
+              Hva betyr dette for min bolig?
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Form Modal */}
