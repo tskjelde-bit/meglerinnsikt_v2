@@ -56,7 +56,7 @@
 }
 
 .aboutTitleGradient {
-  background-image: linear-gradient(to right, #E8634A, #E8548A, #6366F1);
+  background-image: linear-gradient(to right, #2D4B5F, #3B82F6, #60A5FA);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
