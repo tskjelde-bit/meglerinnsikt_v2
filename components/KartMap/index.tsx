@@ -7,7 +7,7 @@ import { kartMapStyle } from './kartMapStyle';
 import { prefixPath } from '@/utils/path';
 import classes from './KartMap.module.css';
 
-// ---- Mock data per bydel (structure only, values are placeholders) ----
+// ---- Mock data per bydel ----
 const districtData: Record<string, {
   priceChange: number;
   turnoverDays: number;
@@ -124,8 +124,23 @@ const osloDefault = {
   buyerPoints: ['Variert tilbud på tvers av bydeler', 'Klikk på en bydel for detaljert innsikt'],
 };
 
-// Oslo average for comparison
-const OSLO_AVG_PRICE_CHANGE = 2.8;
+// Choropleth color scale based on priceChange value
+const CHOROPLETH_SCALE: [number, string][] = [
+  [0, '#F1F5F9'],
+  [2, '#DBEAFE'],
+  [3, '#BFDBFE'],
+  [4, '#93C5FD'],
+  [5, '#60A5FA'],
+  [6, '#3B82F6'],
+];
+const CHOROPLETH_MAX = '#2563EB';
+
+function getChoroplethColor(priceChange: number): string {
+  for (let i = CHOROPLETH_SCALE.length - 1; i >= 0; i--) {
+    if (priceChange >= CHOROPLETH_SCALE[i][0]) return CHOROPLETH_SCALE[i][1];
+  }
+  return CHOROPLETH_SCALE[0][1];
+}
 
 function KartMap() {
   const { center, setCenter, selectedDistrict, setSelectedDistrict } = useMap();
@@ -133,12 +148,10 @@ function KartMap() {
   const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null);
   const [labelFeatures, setLabelFeatures] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [panelOpen, setPanelOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [formRole, setFormRole] = useState<string | null>(null);
   const [formSize, setFormSize] = useState(70);
 
-  // Load label points for markers
   useEffect(() => {
     fetch(prefixPath('/oslo_label_points.geojson?v=2'))
       .then(res => res.json())
@@ -148,33 +161,32 @@ function KartMap() {
       .catch(err => console.error('Error loading labels:', err));
   }, []);
 
-  // Choropleth blue fills – solid colors per brand spec
+  // True choropleth: varying blue shades based on priceChange
   const fillColorExpression: any = (() => {
     const expr: any[] = ['case'];
-    Object.entries(districtData).forEach(([name]) => {
+    Object.entries(districtData).forEach(([name, data]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
       if (selectedDistrict === name) {
-        expr.push('#3B82F6'); // vibrant blue – selected
+        expr.push('#2563EB');
       } else if (hoveredDistrict === name) {
-        expr.push('#93C5FD'); // lighter blue – hover
+        const natural = getChoroplethColor(data.priceChange);
+        const idx = CHOROPLETH_SCALE.findIndex(([, c]) => c === natural);
+        expr.push(idx < CHOROPLETH_SCALE.length - 1 ? CHOROPLETH_SCALE[idx + 1][1] : CHOROPLETH_MAX);
       } else if (selectedDistrict && selectedDistrict !== name) {
-        expr.push('#DBEAFE'); // faded blue – dimmed
+        expr.push('#E8EEF4');
       } else {
-        expr.push('#60A5FA'); // blue accent – default
+        expr.push(getChoroplethColor(data.priceChange));
       }
     });
     expr.push('rgba(0, 0, 0, 0)');
     return expr;
   })();
 
-  // Outlines: white by default, blue on hover/selected
   const outlineColorExpression: any = (() => {
     const expr: any[] = ['case'];
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
-      if (selectedDistrict === name) {
-        expr.push('#3B82F6');
-      } else if (hoveredDistrict === name) {
+      if (selectedDistrict === name || hoveredDistrict === name) {
         expr.push('#3B82F6');
       } else {
         expr.push('#FFFFFF');
@@ -188,9 +200,7 @@ function KartMap() {
     const expr: any[] = ['case'];
     Object.entries(districtData).forEach(([name]) => {
       expr.push(['==', ['get', 'BYDELSNAVN'], name]);
-      if (selectedDistrict === name) {
-        expr.push(2.5);
-      } else if (hoveredDistrict === name) {
+      if (selectedDistrict === name || hoveredDistrict === name) {
         expr.push(2.5);
       } else {
         expr.push(1);
@@ -210,30 +220,65 @@ function KartMap() {
     const name = feature?.properties?.BYDELSNAVN;
     if (name && districtData[name]) {
       setSelectedDistrict(name);
-      setPanelOpen(true);
     }
   }, [setSelectedDistrict]);
 
-  const closePanel = useCallback(() => {
-    setPanelOpen(false);
-    setSelectedDistrict(null);
-  }, [setSelectedDistrict]);
-
-  const openModal = useCallback(() => {
-    setModalOpen(true);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setModalOpen(false);
-  }, []);
+  const openModal = useCallback(() => setModalOpen(true), []);
+  const closeModal = useCallback(() => setModalOpen(false), []);
 
   const currentData = selectedDistrict ? districtData[selectedDistrict] : null;
   const displayData = currentData || osloDefault;
   const displayName = selectedDistrict || 'Oslo';
 
+  const fmtSqm = (v: number) => v.toLocaleString('nb-NO');
+
   return (
     <div className={classes.pageLayout}>
-      {/* Map column */}
+      {/* LEFT: About column */}
+      <div className={classes.aboutColumn}>
+        <h1 className={classes.aboutTitle}>{displayName}</h1>
+        <p className={classes.aboutText}>{displayData.statusText}</p>
+
+        <div className={classes.aboutFeatures}>
+          <div className={classes.aboutFeature}>
+            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <div className={classes.aboutFeatureText}>
+              <p className={classes.aboutFeatureTitle}>Selgere</p>
+              <p className={classes.aboutFeatureDesc}>{displayData.sellerPoints[0]}</p>
+            </div>
+          </div>
+          <div className={classes.aboutFeature}>
+            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M16 8l-4 4-4-4" />
+            </svg>
+            <div className={classes.aboutFeatureText}>
+              <p className={classes.aboutFeatureTitle}>Kjøpere</p>
+              <p className={classes.aboutFeatureDesc}>{displayData.buyerPoints[0]}</p>
+            </div>
+          </div>
+          <div className={classes.aboutFeature}>
+            <svg className={classes.aboutFeatureIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+            <div className={classes.aboutFeatureText}>
+              <p className={classes.aboutFeatureTitle}>Meglere</p>
+              <p className={classes.aboutFeatureDesc}>Datadrevet innsikt for rådgivning</p>
+            </div>
+          </div>
+        </div>
+
+        {currentData && (
+          <button className={classes.ctaButton} onClick={openModal}>
+            Hva betyr dette for min bolig?
+          </button>
+        )}
+      </div>
+
+      {/* CENTER: Map */}
       <div className={classes.mapColumn}>
         <Mapbox
           ref={mapRef}
@@ -280,15 +325,12 @@ function KartMap() {
                 />
               </Source>
 
-              {/* Discrete text labels — no pins, no background */}
               {labelFeatures.map((feature, index) => {
                 const name = feature.properties?.BYDELSNAVN;
                 const coords = feature.geometry.coordinates;
                 if (!name || !coords) return null;
-
                 const isSelected = name === selectedDistrict;
                 const isDimmed = !!selectedDistrict && !isSelected;
-
                 return (
                   <Marker
                     key={`kart-label-${index}`}
@@ -300,10 +342,7 @@ function KartMap() {
                       className={`${classes.mapLabel} ${isSelected ? classes.mapLabelActive : ''} ${isDimmed ? classes.mapLabelDimmed : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (districtData[name]) {
-                          setSelectedDistrict(name);
-                          setPanelOpen(true);
-                        }
+                        if (districtData[name]) setSelectedDistrict(name);
                       }}
                     >
                       {name}
@@ -316,92 +355,31 @@ function KartMap() {
         </Mapbox>
       </div>
 
-      {/* Side panel column — always visible */}
-      <div className={classes.sidePanel}>
-        <div className={classes.panelInner}>
-          {/* Header */}
-          <div className={classes.panelHeader}>
-            <h2 className={classes.panelTitle}>
-              {displayName}
-            </h2>
-            <p className={classes.panelSubtitle}>Markedsstatus nå</p>
-          </div>
-
-          {/* Status line */}
-          <div className={classes.statusLine}>
-            {displayData.statusText}
-          </div>
-
-          {/* Key figures */}
-          <div className={classes.keyFigures}>
-            <div className={classes.keyFigure}>
-              <div className={classes.keyFigureValue}>
-                {displayData.priceChange > 0 ? '+' : ''}{displayData.priceChange.toFixed(1)}%
-              </div>
-              <div className={classes.keyFigureLabel}>Prisendring i år</div>
+      {/* RIGHT: Stats column */}
+      <div className={classes.statsColumn}>
+        <div className={classes.keyFigures}>
+          <div className={classes.keyFigure}>
+            <div className={classes.keyFigureValue}>
+              {displayData.priceChange > 0 ? '+' : ''}{displayData.priceChange.toFixed(1)}%
             </div>
-            <div className={classes.keyFigure}>
-              <div className={classes.keyFigureValue}>{displayData.turnoverDays}</div>
-              <div className={classes.keyFigureLabel}>Dager omsetning</div>
-            </div>
-            <div className={classes.keyFigure}>
-              <div className={classes.keyFigureValue}>
-                {(displayData.sqmPrice / 1000).toFixed(0)}k
-              </div>
-              <div className={classes.keyFigureLabel}>Kr/m²</div>
-            </div>
+            <div className={classes.keyFigureLabel}>Prisendring i år</div>
           </div>
-
-          {/* Mini graph placeholder */}
-          <div className={classes.graphPlaceholder}>
-            <svg className={classes.graphLine} viewBox="0 0 300 60" preserveAspectRatio="none">
-              <polyline
-                points="0,50 30,45 60,48 90,40 120,35 150,38 180,30 210,25 240,20 270,22 300,15"
-                fill="none"
-                stroke="#3B82F6"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <div className={classes.graphLabel}>Siste 12 mnd</div>
+          <div className={classes.keyFigure}>
+            <div className={classes.keyFigureValue}>{displayData.turnoverDays}</div>
+            <div className={classes.keyFigureLabel}>Dager omsetning</div>
           </div>
-
-          {/* Interpretation */}
-          <div className={classes.interpretSection}>
-            <h3 className={classes.interpretTitle}>
-              Dette betyr for selger
-            </h3>
-            <ul className={classes.interpretList}>
-              {displayData.sellerPoints.map((point, i) => (
-                <li key={`seller-${i}`}>{point}</li>
-              ))}
-            </ul>
+          <div className={classes.keyFigure}>
+            <div className={classes.keyFigureValue}>{fmtSqm(displayData.sqmPrice)}</div>
+            <div className={classes.keyFigureLabel}>Kr/m²</div>
           </div>
-
-          <div className={classes.interpretDivider} />
-
-          <div className={classes.interpretSection}>
-            <h3 className={classes.interpretTitle}>
-              Dette betyr for kjøper
-            </h3>
-            <ul className={classes.interpretList}>
-              {displayData.buyerPoints.map((point, i) => (
-                <li key={`buyer-${i}`}>{point}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* CTA */}
-          {currentData && (
-            <button className={classes.ctaButton} onClick={openModal}>
-              Hva betyr dette for min bolig?
-            </button>
-          )}
         </div>
+
+        <p className={classes.statusLine}>
+          {displayData.statusText}
+        </p>
       </div>
 
-      {/* ===== Form Modal ===== */}
+      {/* Form Modal */}
       <div className={`${classes.modalOverlay} ${modalOpen ? classes.open : ''}`} onClick={closeModal}>
         <div className={classes.modal} onClick={(e) => e.stopPropagation()}>
           <div className={classes.modalHeader}>
@@ -417,9 +395,7 @@ function KartMap() {
               </svg>
             </button>
           </div>
-
           <div className={classes.modalBody}>
-            {/* Boligtype */}
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>Boligtype</label>
               <select className={classes.formSelect} defaultValue="">
@@ -430,61 +406,34 @@ function KartMap() {
                 <option value="tomannsbolig">Tomannsbolig</option>
               </select>
             </div>
-
-            {/* Størrelse */}
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>Ca. størrelse</label>
               <div className={classes.rangeGroup}>
-                <input
-                  type="range"
-                  className={classes.formRange}
-                  min={20}
-                  max={250}
-                  step={5}
-                  value={formSize}
-                  onChange={(e) => setFormSize(Number(e.target.value))}
-                />
+                <input type="range" className={classes.formRange} min={20} max={250} step={5} value={formSize} onChange={(e) => setFormSize(Number(e.target.value))} />
                 <span className={classes.rangeValue}>{formSize} m²</span>
               </div>
             </div>
-
-            {/* Rolle */}
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>Jeg er</label>
               <div className={classes.roleSelector}>
                 {['Selger', 'Kjøper', 'Begge'].map((role) => (
-                  <button
-                    key={role}
-                    type="button"
-                    className={`${classes.roleOption} ${formRole === role ? classes.selected : ''}`}
-                    onClick={() => setFormRole(role)}
-                  >
-                    {role}
-                  </button>
+                  <button key={role} type="button" className={`${classes.roleOption} ${formRole === role ? classes.selected : ''}`} onClick={() => setFormRole(role)}>{role}</button>
                 ))}
               </div>
             </div>
-
-            {/* Kontaktinfo */}
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>Navn</label>
               <input type="text" className={classes.formInput} placeholder="Ditt navn" />
             </div>
-
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>E-post</label>
               <input type="email" className={classes.formInput} placeholder="din@epost.no" />
             </div>
-
             <div className={classes.formGroup}>
               <label className={classes.formLabel}>Telefon</label>
               <input type="tel" className={classes.formInput} placeholder="000 00 000" />
             </div>
-
-            {/* Submit (visual only) */}
-            <button type="button" className={classes.formSubmit}>
-              Send forespørsel
-            </button>
+            <button type="button" className={classes.formSubmit}>Send forespørsel</button>
           </div>
         </div>
       </div>
